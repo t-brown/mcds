@@ -32,7 +32,7 @@ AC_CHECK_FUNCS([memset getprogname program_invocation_short_name])
 AC_FUNC_MALLOC
 
 AC_CONFIG_FILES([ Makefile
-                 src/Makefile
+                  src/Makefile
                  ])
 
 PKG_CHECK_MODULES([libcurl], [curl])
