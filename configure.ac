@@ -4,10 +4,15 @@
 
 AC_PREREQ(2.61)
 AC_INIT([mcds], 0.1, Timothy.Brown@terralimno.com)
+AC_CONFIG_AUX_DIR([build-aux])
 
 # Create the VERSION file, which contains the package version
 echo AC_PACKAGE_VERSION>VERSION
 AC_SUBST(PACKAGE_VERSION)
+
+# Internationalization
+AM_GNU_GETTEXT_VERSION([0.18.3])
+AM_GNU_GETTEXT([external])
 
 # Initialise automake
 AM_INIT_AUTOMAKE([foreign -Wall -Werror])
@@ -32,10 +37,11 @@ AC_CHECK_FUNCS([memset getprogname program_invocation_short_name])
 AC_FUNC_MALLOC
 
 AC_CONFIG_FILES([ Makefile
-                  src/Makefile
+		 po/Makefile.in
+		 src/Makefile
                  ])
 
-PKG_CHECK_MODULES([libcurl], [curl])
+PKG_CHECK_MODULES([libcurl], [libcurl])
 PKG_CHECK_MODULES([libxml2], [libxml-2.0])
 
 AC_OUTPUT
