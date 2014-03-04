@@ -36,7 +36,7 @@ extern "C"
 int query(CURL *, const char *, char **);
 
 /* Search a carddav response */
-int search(const char *, const char *);
+int search(const char *);
 
 #ifdef __cplusplus
 }                               /* extern "C" */

@@ -17,6 +17,14 @@
  *
  */
 
+/**
+ * \file main.c
+ * Main entry point for the program.
+ *
+ * \ingroup main
+ * \{
+ **/
+
 #ifdef HAVE_CONFIG_H
 #include "config.h"
 #endif
@@ -29,13 +37,29 @@
 #include "gettext.h"
 
 #include <getopt.h>
+#include <curl/curl.h>
 
 #include "defs.h"
+#include "options.h"
+#include "mem.h"
+#include "curl.h"
+#include "carddav.h"
+
+
+/* Initalise extern definitions */
+#define X(a, b) b,
+char *sterm_name[] = {			/**< Search term names */
+	STERMS_TABLE
+};
+#undef X
+
+struct opts options = {0};		/**< Program options */
+
 
 /* Internal functions */
 static void print_usage(void);
 static void print_version(void);
-static int  parse_argv(int, char **);
+static int  parse_argv(int, char **, char **, char **);
 static const char *program_name(void);
 
 /**
@@ -51,14 +75,42 @@ int
 main(int argc, char **argv)
 {
 
-	/*
+	char *url  = NULL;	/* CardDav URL */
+	char *name = NULL;	/* Name to search/query for */
+	char *res  = NULL;	/* query result */
+	CURL *hdl  = NULL;	/* Curl handle */
+
+#ifdef HAVE_SETLOCALE
 	setlocale(LC_ALL, "");
+#endif
+#ifdef ENABLE_NLS
 	bindtextdomain(PACKAGE, LOCALEDIR);
 	textdomain(PACKAGE);
-	*/
+#endif
 
-	if (parse_argv(argc, argv)) {
+	if (parse_argv(argc, argv, &url, &name)) {
 		return(EXIT_FAILURE);
+	}
+
+	if (cinit(url, &hdl)) {
+		return(EXIT_FAILURE);
+	}
+
+	if (query(hdl, name, &res)) {
+		return(EXIT_FAILURE);
+	}
+
+	if (search(res)) {
+		return(EXIT_FAILURE);
+	}
+
+	if (cfini(&hdl)) {
+		return(EXIT_FAILURE);
+	}
+
+	if (url) {
+		free(url);
+		url = NULL;
 	}
 
 	return(EXIT_SUCCESS);
@@ -73,21 +125,21 @@ main(int argc, char **argv)
  * \retval 0 If there were no errors.
  **/
 static int
-parse_argv(int argc, char **argv)
+parse_argv(int argc, char **argv, char **url, char **name)
 {
 	int opt = 0;
 	int opt_index = 0;
-	char *soptions = "hVv";                 /* short options structure */
+	char *soptions = "hVvs:u:";             /* short options structure */
 	static struct option loptions[] = {     /* long options structure */
-		{"help", no_argument, NULL, 'h'},
-		{"version", no_argument, NULL, 'V'},
-		{"verbose", no_argument, NULL, 'v'},
-		{NULL, 0, NULL, 0}
+		{"help",       no_argument,        NULL,  'h'},
+		{"version",    no_argument,        NULL,  'V'},
+		{"verbose",    no_argument,        NULL,  'v'},
+		{"search",     required_argument,  NULL,  's'},
+		{"url",        required_argument,  NULL,  'u'},
+		{NULL,         1,                  NULL,  0}
 	};
-	char *tmp = NULL;       /* Temporary string for basenaem */
-	char *dtmp = NULL;      /* Temporary string destination */
-	char *ptr = NULL;       /* Pointer for basename */
 
+	options.search = email;
 	while ((opt = getopt_long(argc, argv, soptions, loptions,
 				  &opt_index)) != -1) {
 		switch (opt) {
@@ -98,9 +150,20 @@ parse_argv(int argc, char **argv)
 			print_usage();
 			break;
 		case 'v':
-			/*
 			options.verbose = 1;
-			*/
+			break;
+		case 's':
+			if (optarg[0] == 'a' ||
+			    optarg[0] == 'A' ) {
+				options.search = address;
+			} else if (optarg[0] == 't' ||
+				   optarg[0] == 'T' ) {
+				options.search = address;
+			}
+			break;
+		case 'u':
+			*url = xmalloc(strlen(optarg +1) * sizeof(char));
+			strcpy(*url, optarg);
 			break;
 		default:
 			print_usage();
@@ -110,9 +173,20 @@ parse_argv(int argc, char **argv)
 	argc -= optind;
 	argv += optind;
 
-	if (argc == 1) {
-		warnx(_("Must specify a destination"));
+	if (argc != 1) {
+		warnx(_("Must specify a name to search for."));
 		print_usage();
+	}
+
+	*name = (char *) xmalloc((strlen(argv[0]) +1) * sizeof(char));
+	strcpy(*name, argv[0]);
+
+	if (options.verbose) {
+		fprintf(stderr, "%s options are:\n", program_name());
+		fprintf(stderr, "  URL        : %s\n", *url);
+		fprintf(stderr, "  Search name: %s\n", *name);
+		fprintf(stderr, "  Query      : %s\n",
+				sterm_name[options.search]);
 	}
 
 	return(EXIT_SUCCESS);
@@ -130,7 +204,7 @@ usage: %s [-h] [-V] [-v] [-a] [-p] [-r] [-t #] src dst\n\
   -h, --help       display this help and exit.\n\
   -V, --version    display version information and exit.\n\
   -v, --verbose    verbose mode.\n\
-	"), program_name());
+"), program_name());
 	exit(EXIT_FAILURE);
 }
 
@@ -165,3 +239,7 @@ program_name(void)
 #endif /* HAVE_PROGRAM_INVOCATION_SHORT_NAME */
 #endif /* HAVE_GETPROGNAME */
 }
+
+/**
+ * \}
+ **/

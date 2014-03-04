@@ -32,15 +32,35 @@ extern "C"
 {
 #endif
 
-/** Bit masks for options **/
+
+#define STERMS_TABLE                 \
+	X(email,       "EMAIL")      \
+	X(address,     "ADDRESS")    \
+	X(telephone,   "TELEPHONE")
+
+#define X(a, b) a,
+enum s_terms {
+	STERMS_TABLE
+};
+#undef X
+
+#if 0
+#define X(a, b) b,
+char *sterm_name[] = {
+	STERMS_TABLE
+};
+#undef X
+#endif
+
+/** Program command line options **/
 struct opts {
-	uint8_t VERBOSE       :1;
-	uint8_t ADDRESS       :1;
-	uint8_t TELEPHONE     :1;
+	uint8_t verbose;
+	enum s_terms search;
 };
 
 /** **/
 extern struct opts options;
+extern char *sterm_name[];
 
 #ifdef __cplusplus
 }                               /* extern "C" */

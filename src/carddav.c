@@ -37,6 +37,7 @@
 #include <locale.h>
 #include "gettext.h"
 #include "defs.h"
+#include "options.h"
 #include "mem.h"
 #include "carddav.h"
 
@@ -47,7 +48,7 @@ static size_t query_cb(void *, size_t, size_t, void *);
 static const char sterm[] =
 "<?xml version='1.0' encoding='utf-8' ?>"
 "<C:addressbook-query xmlns:D='DAV:'xmlns:C='urn:ietf:params:xml:ns:carddav'>"
-"<D:prop><C:address-data><C:prop name='FN'/><C:prop name='EMAIL'/>"
+"<D:prop><C:address-data><C:prop name='FN'/><C:prop name='%s'/>"
 "</C:address-data></D:prop>"
 "<C:filter test='anyof'><C:prop-filter name='FN'>"
 "<C:text-match collation='i;unicode-casemap' match-type='contains'>%s"
@@ -76,9 +77,13 @@ query(CURL *hdl, const char *name, char **result)
 		return(EXIT_FAILURE);
 	}
 
-	if (asprintf(&s, sterm, name) == -1) {
+	if (asprintf(&s, sterm, sterm_name[options.search], name) == -1) {
 		warnx(_("Unable to build search string."));
 		return(EXIT_FAILURE);
+	}
+
+	if (options.verbose) {
+		fprintf(stderr, "Searching for:\n%s\n", s);
 	}
 
 	hdrs = curl_slist_append(hdrs, "Content-Type: text/xml");
@@ -95,6 +100,10 @@ query(CURL *hdl, const char *name, char **result)
 		warnx(_("Unable to search for %s: %s"),
 				name, curl_easy_strerror(res));
 		return(EXIT_FAILURE);
+	}
+
+	if (options.verbose) {
+		fprintf(stderr, "Retrieved: \n%s\n", *result);
 	}
 
 	curl_slist_free_all(hdrs);
@@ -134,6 +143,21 @@ query_cb(void *contents, size_t size, size_t nmemb, void *mem)
 
 	return(len);
 
+}
+
+/**
+ * Search a query's result. This will run a regex with the options
+ * search field to print to stdout all the matches.
+ *
+ * \parm[in] res  The query result.
+ *
+ * \retval 0 If there were no errors.
+ * \retval 1 If an error was encounted.
+ **/
+int
+search(const char *res)
+{
+	return(EXIT_SUCCESS);
 }
 
 /**

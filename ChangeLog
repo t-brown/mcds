@@ -1,5 +1,0 @@
-2014-02-26  gettextize  <bug-gnu-gettext@gnu.org>
-
-	* Makefile.am (EXTRA_DIST): New variable.
-	* configure.ac (AM_GNU_GETTEXT_VERSION): Bump to 0.18.3.
-
