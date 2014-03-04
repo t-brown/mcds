@@ -33,10 +33,10 @@ extern "C"
 #endif
 
 
-#define STERMS_TABLE                 \
-	X(email,       "EMAIL")      \
-	X(address,     "ADDRESS")    \
-	X(telephone,   "TELEPHONE")
+#define STERMS_TABLE             \
+	X(email,       "EMAIL")  \
+	X(address,     "ADR")    \
+	X(telephone,   "TEL")
 
 #define X(a, b) a,
 enum s_terms {

@@ -157,6 +157,12 @@ query_cb(void *contents, size_t size, size_t nmemb, void *mem)
 int
 search(const char *res)
 {
+	/* BEGIN:VCARD */
+	/* END:VCARD */
+	/* sterm_name[options.search] */
+
+	/* For addresses convert ";" to "\n" */
+
 	return(EXIT_SUCCESS);
 }
 

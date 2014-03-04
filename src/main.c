@@ -139,7 +139,10 @@ parse_argv(int argc, char **argv, char **url, char **name)
 		{NULL,         1,                  NULL,  0}
 	};
 
+	/* set the default field to search */
 	options.search = email;
+
+	/* parse the arguments */
 	while ((opt = getopt_long(argc, argv, soptions, loptions,
 				  &opt_index)) != -1) {
 		switch (opt) {
@@ -158,7 +161,7 @@ parse_argv(int argc, char **argv, char **url, char **name)
 				options.search = address;
 			} else if (optarg[0] == 't' ||
 				   optarg[0] == 'T' ) {
-				options.search = address;
+				options.search = telephone;
 			}
 			break;
 		case 'u':
