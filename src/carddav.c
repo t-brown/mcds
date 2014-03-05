@@ -101,6 +101,8 @@ query(CURL *hdl, const char *name, char **result)
 				name, curl_easy_strerror(res));
 		return(EXIT_FAILURE);
 	}
+	/* Write out a blank line for mutt */
+	printf("\n");
 
 	if (options.verbose) {
 		fprintf(stderr, "Retrieved: \n%s\n", *result);
@@ -190,6 +192,7 @@ search(const char *res)
 		warnx(_("Unable to build regex pattern."));
 		return(EXIT_FAILURE);
 	}
+
 	/* Compile the regex pattern */
 	if ((rerr = regcomp(&vcard, vpt, REG_EXTENDED|REG_NEWLINE)) != 0) {
 		rlen = regerror(rerr, &vcard, NULL, 0);
@@ -206,18 +209,26 @@ search(const char *res)
 	/* Grab the full name */
 	rerr = regexec(&fn, &res[0], 2, fpm, 0);
 	if (rerr != 0) {
+		regfree(&fn);
+		regfree(&vcard);
+		if (vpt) {
+			free(vpt);
+			vpt = NULL;
+		}
 		return(EXIT_FAILURE);
 	}
 
 	/* Grab the field we wanted */
-	rerr = regexec(&vcard, &res[0], 3, vpm, 0);
+	rerr = regexec(&vcard, &res[0], 3, vpm, REG_NOTBOL);
+
 	while (rerr == 0) {
 		printf("%.*s\t%.*s\n",
 				(int)(vpm[2].rm_eo - vpm[2].rm_so),
 				res + vpm[2].rm_so,
-				(int)(fpm[2].rm_eo - fpm[2].rm_so),
-				res + fpm[2].rm_so);
+				(int)(fpm[1].rm_eo - fpm[1].rm_so),
+				res + fpm[1].rm_so);
 		res += vpm[0].rm_eo;
+		rerr = regexec(&fn, res, 2, fpm, REG_NOTBOL);
 		rerr = regexec(&vcard, res, 3, vpm, REG_NOTBOL);
 	}
 
