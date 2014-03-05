@@ -18,3 +18,4 @@ mcds_SOURCES = main.h		main.c		\
 
 
 noinst_HEADERS = gettext.h
+man_MANS = mcds.1
