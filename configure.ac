@@ -30,7 +30,7 @@ AX_COMPILER_VENDOR
 
 # Checks for header files
 AC_HEADER_STDC
-AC_CHECK_HEADERS([stdint.h stdlib.h string.h unistd.h])
+AC_CHECK_HEADERS([stdlib.h string.h unistd.h])
 
 # Checks for functions and libraries
 AC_CHECK_FUNCS([memset getprogname program_invocation_short_name])

@@ -254,7 +254,7 @@ ACLOCAL_AMFLAGS = -I m4
 SUBDIRS = po src
 DISTCLEANFILES = *~ *.log
 MAINTAINERCLEANFILES = Makefile.in
-EXTRA_DIST = m4/ChangeLog m4/Makefile.in
+EXTRA_DIST = ChangeLog
 all: all-recursive
 
 .SUFFIXES:
@@ -739,7 +739,6 @@ uninstall-am:
 	maintainer-clean-generic mostlyclean mostlyclean-generic pdf \
 	pdf-am ps ps-am tags tags-recursive uninstall uninstall-am
 
-#EXTRA_DIST = config.rpath mkinstalldirs m4/Makefile.in
 
 check-gettext:
 	@if test x$(USE_NLS) != "xyes" ; then echo "Missing gettext. Rerun configure and check for" \

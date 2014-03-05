@@ -1,5 +1,6 @@
 localedir = $(datadir)/locale
 DEFS = -DLOCALEDIR=\"$(localedir)\" @DEFS@
+AUTOMAKE_OPTIONS = nostdinc
 
 bin_PROGRAMS = mcds
 
@@ -10,12 +11,11 @@ mcds_LDFLAGS = $(LTLIBINTL)			\
 	       $(CURL_LIBS)			\
 	       $(XML_LIBS)
 
-mcds_SOURCES = main.h		main.c		\
-	       defs.h		options.h	\
-	       mem.h		mem.c		\
-	       curl.h		curl.c		\
-	       carddav.h	carddav.c
-
+mcds_SOURCES = defs.h		options.h	\
+	       main.c				\
+	       mem.c		mem.h		\
+	       curl.c		curl.h		\
+	       carddav.c	carddav.h
 
 noinst_HEADERS = gettext.h
 man_MANS = mcds.1
