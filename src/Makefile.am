@@ -18,4 +18,4 @@ mcds_SOURCES = defs.h		options.h	\
 	       carddav.c	carddav.h
 
 noinst_HEADERS = gettext.h
-man_MANS = mcds.1
+dist_man_MANS = mcds.1
