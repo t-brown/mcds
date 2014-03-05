@@ -42,7 +42,7 @@ AC_CONFIG_FILES([ Makefile
                  ])
 
 PKG_CHECK_MODULES([CURL], [libcurl])
-PKG_CHECK_MODULES([XML], [libxml-2.0])
+#PKG_CHECK_MODULES([XML], [libxml-2.0])
 
 AC_OUTPUT
 echo
