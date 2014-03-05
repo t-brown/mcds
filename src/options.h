@@ -33,9 +33,9 @@ extern "C"
 #endif
 
 
-#define STERMS_TABLE             \
-	X(email,       "EMAIL")  \
-	X(address,     "ADR")    \
+#define STERMS_TABLE            \
+	X(email,       "EMAIL") \
+	X(address,     "ADR")   \
 	X(telephone,   "TEL")
 
 #define X(a, b) a,
@@ -44,13 +44,6 @@ enum s_terms {
 };
 #undef X
 
-#if 0
-#define X(a, b) b,
-char *sterm_name[] = {
-	STERMS_TABLE
-};
-#undef X
-#endif
 
 /** Program command line options **/
 struct opts {
@@ -61,6 +54,7 @@ struct opts {
 /** **/
 extern struct opts options;
 extern char *sterm_name[];
+extern char *sterm_regex[];
 
 #ifdef __cplusplus
 }                               /* extern "C" */

@@ -157,12 +157,48 @@ query_cb(void *contents, size_t size, size_t nmemb, void *mem)
 int
 search(const char *res)
 {
-	/* BEGIN:VCARD */
-	/* END:VCARD */
-	/* sterm_name[options.search] */
+
+	int rerr = 0;			/* Regex error code */
+	regex_t vcard;			/* Precompiled vcard regex */
+	regmatch_t vpm[3];		/* Regex pattern match */
+	size_t rlen = 0;		/* Regex error string length */
+	char *vpt  = NULL;		/* Regex pattern */
+	char *rstr = NULL;		/* Regex error string */
+
+	/* Create the regex pattern */
+	if (asprintf(&vpt, "^%s([A-Za-z;=])+:(.*)\r",
+				sterm_name[options.search]) == -1) {
+		warnx(_("Unable to build regex pattern."));
+		return(EXIT_FAILURE);
+	}
+	/* Compile the regex pattern */
+	if ((rerr = regcomp(&vcard, vpt, REG_EXTENDED|REG_NEWLINE)) != 0) {
+		rlen = regerror(rerr, &vcard, NULL, 0);
+		rstr = xmalloc((rlen+1)*sizeof(char));
+		regerror(rerr, &vcard, rstr, rlen);
+		warnx(_("Unable to compile regex '%s': %s\n"), vpt, rstr);
+		if (rstr) {
+			free(rstr);
+			rstr = NULL;
+		}
+		return(EXIT_FAILURE);
+	}
+
+	rerr = regexec(&vcard, &res[0], 3, vpm, 0);
+	while (rerr == 0) {
+		printf("%.*s\n",(int)(vpm[2].rm_eo - vpm[2].rm_so),
+				res + vpm[2].rm_so);
+		res += vpm[0].rm_eo;
+		rerr = regexec(&vcard, res, 3, vpm, REG_NOTBOL);
+	}
 
 	/* For addresses convert ";" to "\n" */
 
+	regfree(&vcard);
+	if (vpt) {
+		free(vpt);
+		vpt = NULL;
+	}
 	return(EXIT_SUCCESS);
 }
 
