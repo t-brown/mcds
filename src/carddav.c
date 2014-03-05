@@ -159,11 +159,30 @@ search(const char *res)
 {
 
 	int rerr = 0;			/* Regex error code */
+	size_t rlen = 0;		/* Regex error string length */
+	char *rstr = NULL;		/* Regex error string */
+
+	regex_t fn;			/* Precompiled full name regex */
+	regmatch_t fpm[3];		/* Regex pattern match */
+	const char fpt[] = "FN:(.*)\r"; /* Regex patter for full name */
+
 	regex_t vcard;			/* Precompiled vcard regex */
 	regmatch_t vpm[3];		/* Regex pattern match */
-	size_t rlen = 0;		/* Regex error string length */
 	char *vpt  = NULL;		/* Regex pattern */
-	char *rstr = NULL;		/* Regex error string */
+
+
+	/* Compile the regex pattern for the full name */
+	if ((rerr = regcomp(&fn, fpt, REG_EXTENDED|REG_NEWLINE)) != 0) {
+		rlen = regerror(rerr, &fn, NULL, 0);
+		rstr = xmalloc((rlen+1)*sizeof(char));
+		regerror(rerr, &fn, rstr, rlen);
+		warnx(_("Unable to compile regex '%s': %s\n"), fpt, rstr);
+		if (rstr) {
+			free(rstr);
+			rstr = NULL;
+		}
+		return(EXIT_FAILURE);
+	}
 
 	/* Create the regex pattern */
 	if (asprintf(&vpt, "^%s([A-Za-z;=])+:(.*)\r",
@@ -184,17 +203,29 @@ search(const char *res)
 		return(EXIT_FAILURE);
 	}
 
+	/* Grab the full name */
+	rerr = regexec(&fn, &res[0], 2, fpm, 0);
+	if (rerr != 0) {
+		return(EXIT_FAILURE);
+	}
+
+	/* Grab the field we wanted */
 	rerr = regexec(&vcard, &res[0], 3, vpm, 0);
 	while (rerr == 0) {
-		printf("%.*s\n",(int)(vpm[2].rm_eo - vpm[2].rm_so),
-				res + vpm[2].rm_so);
+		printf("%.*s\t%.*s\n",
+				(int)(vpm[2].rm_eo - vpm[2].rm_so),
+				res + vpm[2].rm_so,
+				(int)(fpm[2].rm_eo - fpm[2].rm_so),
+				res + fpm[2].rm_so);
 		res += vpm[0].rm_eo;
 		rerr = regexec(&vcard, res, 3, vpm, REG_NOTBOL);
 	}
 
 	/* For addresses convert ";" to "\n" */
 
+	regfree(&fn);
 	regfree(&vcard);
+
 	if (vpt) {
 		free(vpt);
 		vpt = NULL;
