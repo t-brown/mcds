@@ -29,8 +29,13 @@
 #include "config.h"
 #endif
 
+#ifndef _GNU_SOURCE
+#define _GNU_SOURCE
+#endif
+
 #include <stdio.h>
 #include <stdlib.h>
+#include <errno.h>
 #include <err.h>
 
 #include <locale.h>
@@ -220,10 +225,10 @@ print_version(void)
 {
 	printf(_("%s (GNU %s) %s\n"), program_name(), PACKAGE, VERSION);
 	printf(_("\
-Copyright (C) %s Ontario Institute for Cancer Research.\n\
+Copyright (C) %s Timothy Brown.\n\
 License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>\n\
 This is free software: you are free to change and redistribute it.\n\
-There is NO WARRANTY, to the extent permitted by law.\n\n"), "2009");
+There is NO WARRANTY, to the extent permitted by law.\n\n"), "2014");
 	printf(_("Compiled on %s at %s.\n\n"), __DATE__, __TIME__);
 	exit(EXIT_FAILURE);
 }

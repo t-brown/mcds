@@ -47,7 +47,7 @@ enum s_terms {
 
 /** Program command line options **/
 struct opts {
-	uint8_t verbose;
+	int verbose;
 	enum s_terms search;
 };
 

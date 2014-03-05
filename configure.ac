@@ -11,7 +11,7 @@ echo AC_PACKAGE_VERSION>VERSION
 AC_SUBST(PACKAGE_VERSION)
 
 # Internationalization
-AM_GNU_GETTEXT_VERSION([0.18.3])
+AM_GNU_GETTEXT_VERSION([0.18.1])
 AM_GNU_GETTEXT([external])
 
 # Initialise automake
@@ -35,6 +35,9 @@ AC_CHECK_HEADERS([stdint.h stdlib.h string.h unistd.h])
 # Checks for functions and libraries
 AC_CHECK_FUNCS([memset getprogname program_invocation_short_name])
 AC_FUNC_MALLOC
+
+# Shouldn't need this on newer automakes
+AM_PROG_CC_C_O
 
 AC_CONFIG_FILES([ Makefile
 		 po/Makefile.in
