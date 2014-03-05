@@ -167,6 +167,9 @@ parse_argv(int argc, char **argv, char **url, char **name)
 			} else if (optarg[0] == 't' ||
 				   optarg[0] == 'T' ) {
 				options.search = telephone;
+			} else if (optarg[0] == 'e' ||
+				   optarg[0] == 'E' ) {
+				options.search = email;
 			}
 			break;
 		case 'u':
@@ -208,10 +211,15 @@ static void
 print_usage(void)
 {
 	printf(_("\
-usage: %s [-h] [-V] [-v] [-a] [-p] [-r] [-t #] src dst\n\
-  -h, --help       display this help and exit.\n\
-  -V, --version    display version information and exit.\n\
-  -v, --verbose    verbose mode.\n\
+usage: %s [-h] [-V] [-v] [-s a|t|e] [-u URL] name\n\
+  -h, --help         Display this help and exit.\n\
+  -V, --version      Display version information and exit.\n\
+  -v, --verbose      Verbose mode.\n\
+  -s, --search a|t|e Search term. Known terms are:\n\
+                     a = address\n\
+                     t = telephone\n\
+                     e = email\n\
+  -u, --url          The URL of the carddav server to query.\n\
 "), program_name());
 	exit(EXIT_FAILURE);
 }

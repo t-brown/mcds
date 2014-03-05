@@ -1,0 +1,100 @@
+.\"-
+.\" Manual page written by Timothy Brown <tbrown@terralimno.com>
+.\"
+.\" Copyright (C) 2014 Free Software Foundation, Inc.
+.\"
+.\" Permission is granted to make and distribute verbatim copies of
+.\" this manual provided the copyright notice and this permission notice
+.\" are preserved on all copies.
+.\"
+.\" Permission is granted to copy and distribute modified versions of this
+.\" manual under the conditions for verbatim copying, provided that the
+.\" entire resulting derived work is distributed under the terms of a
+.\" permission notice identical to this one.
+.\"
+.\" Permission is granted to copy and distribute translations of this
+.\" manual into another language, under the above conditions for modified
+.\" versions, except that this permission notice may be included in
+.\" translations approved by the Free Software Foundation instead of in
+.\" the original English.
+.\"
+.\" $Id$
+.\"
+.Dd March 4, 2014
+.Dt mcds 1 LOCAL
+.Sh NAME
+.Nm mcds
+.Nd mutt carddav query
+.Sh SYNOPSIS
+.Nm
+.Op Fl h
+.Op Fl s a|t|e
+.Op Fl u Ar URL
+.Op Fl V
+.Op Fl v
+.Ar name
+.Sh DESCRIPTION
+The
+.Nm
+utility queries a carddav server for the requested information. It's
+primary function is to provide a query command for mutt against a
+carddav server.
+.Pp
+The following options are available:
+.Bl -tag -width flag
+.It Fl h
+Display a short help message and exit.
+.It Fl s Ar a|t|e
+The query term to return. Known terms are:
+.It Fl u Ar URL
+The carddav URL.
+.It Fl V
+Display the version number and exit.
+.It Fl v
+Verbose mode. Causes
+.Nm
+to print debugging messages about its progress.
+.El
+.Pp
+By default
+.Nm
+will connect over SSL without verifying the certificates and will use Basic
+Authentication using the username and password provided in your
+.Pa ~/.netrc
+file.
+.Sh EXIT STATUS
+.Ex -std
+.Sh EXAMPLES
+To query a DAViCal carddav server at the URL
+https://localhost/caldav.php/username/addressbook/
+for the email addresses corresponding to Ben:
+.Dl mcds -u https://localhost/caldav.php/username/addressbook/ Ben
+Which could return a list of people and email addresses as
+.Pp
+.Bd -literal -offset indent
+ben@example.net        Ben Smith
+.Ed
+One can therefore use
+.Nm
+as a
+.Nm mutt
+query program by specifying the following in your
+.Pa ~/.muttrc
+file.
+.Bd -literal -offset indent
+set query_command="mcds -u https://localhost/caldav.php/tbrown/addressbook/ '%s'"
+.Ed
+.Sh SEE ALSO
+.Xr curl 1 ,
+.Xr mutt 1 ,
+.Xr muttrc 5 .
+.Sh STANDARDS
+The
+.Nm
+command is expected to be
+.St -p1003.2
+compatible.
+.Sh AUTHOR
+Written by Timothy Brown.
+.Sh REPORTING BUGS
+Report bugs to <tbrown@terralimno.com>
