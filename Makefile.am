@@ -2,7 +2,7 @@ ACLOCAL_AMFLAGS = -I m4
 SUBDIRS = po src
 DISTCLEANFILES= *~ *.log
 MAINTAINERCLEANFILES = Makefile.in
-EXTRA_DIST = m4/ChangeLog m4/Makefile.in
+EXTRA_DIST = ChangeLog m4/Makefile.in
 #EXTRA_DIST = config.rpath mkinstalldirs m4/Makefile.in
 
 check-gettext:
