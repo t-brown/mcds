@@ -3,7 +3,7 @@
 #
 
 AC_PREREQ(2.61)
-AC_INIT([mcds], 0.1, Timothy.Brown@terralimno.com)
+AC_INIT([mcds], 0.2, Timothy.Brown@terralimno.com)
 AC_CONFIG_AUX_DIR([build-aux])
 
 # Create the VERSION file, which contains the package version
