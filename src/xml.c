@@ -104,7 +104,7 @@ walk_tree(xmlDocPtr doc, xmlNode *node)
 					xmlFree(data);
 				}
 		}
-	walk_nodes(doc, cur->children);
+	walk_tree(doc, cur->children);
 	}
 	return;
 }
