@@ -100,7 +100,8 @@ CONFIG_CLEAN_VPATH_FILES =
 am__installdirs = "$(DESTDIR)$(bindir)" "$(DESTDIR)$(man1dir)"
 PROGRAMS = $(bin_PROGRAMS)
 am_mcds_OBJECTS = mcds-main.$(OBJEXT) mcds-mem.$(OBJEXT) \
-	mcds-curl.$(OBJEXT) mcds-carddav.$(OBJEXT)
+	mcds-curl.$(OBJEXT) mcds-carddav.$(OBJEXT) mcds-xml.$(OBJEXT) \
+	mcds-vcard.$(OBJEXT)
 mcds_OBJECTS = $(am_mcds_OBJECTS)
 mcds_LDADD = $(LDADD)
 mcds_LINK = $(CCLD) $(AM_CFLAGS) $(CFLAGS) $(mcds_LDFLAGS) $(LDFLAGS) \
@@ -263,6 +264,8 @@ VERSION = @VERSION@
 XGETTEXT = @XGETTEXT@
 XGETTEXT_015 = @XGETTEXT_015@
 XGETTEXT_EXTRA_OPTIONS = @XGETTEXT_EXTRA_OPTIONS@
+XML_CFLAGS = @XML_CFLAGS@
+XML_LIBS = @XML_LIBS@
 abs_builddir = @abs_builddir@
 abs_srcdir = @abs_srcdir@
 abs_top_builddir = @abs_top_builddir@
@@ -325,7 +328,9 @@ mcds_SOURCES = defs.h		options.h	\
 	       main.c				\
 	       mem.c		mem.h		\
 	       curl.c		curl.h		\
-	       carddav.c	carddav.h
+	       carddav.c	carddav.h	\
+	       xml.c		xml.h		\
+	       vcard.c		vcard.h
 
 noinst_HEADERS = gettext.h
 dist_man_MANS = mcds.1
@@ -436,6 +441,8 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mcds-curl.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mcds-main.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mcds-mem.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mcds-vcard.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mcds-xml.Po@am__quote@
 
 .c.o:
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(COMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ $<
@@ -506,6 +513,34 @@ mcds-carddav.obj: carddav.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='carddav.c' object='mcds-carddav.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(mcds_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o mcds-carddav.obj `if test -f 'carddav.c'; then $(CYGPATH_W) 'carddav.c'; else $(CYGPATH_W) '$(srcdir)/carddav.c'; fi`
+
+mcds-xml.o: xml.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(mcds_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT mcds-xml.o -MD -MP -MF $(DEPDIR)/mcds-xml.Tpo -c -o mcds-xml.o `test -f 'xml.c' || echo '$(srcdir)/'`xml.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/mcds-xml.Tpo $(DEPDIR)/mcds-xml.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='xml.c' object='mcds-xml.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(mcds_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o mcds-xml.o `test -f 'xml.c' || echo '$(srcdir)/'`xml.c
+
+mcds-xml.obj: xml.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(mcds_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT mcds-xml.obj -MD -MP -MF $(DEPDIR)/mcds-xml.Tpo -c -o mcds-xml.obj `if test -f 'xml.c'; then $(CYGPATH_W) 'xml.c'; else $(CYGPATH_W) '$(srcdir)/xml.c'; fi`
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/mcds-xml.Tpo $(DEPDIR)/mcds-xml.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='xml.c' object='mcds-xml.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(mcds_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o mcds-xml.obj `if test -f 'xml.c'; then $(CYGPATH_W) 'xml.c'; else $(CYGPATH_W) '$(srcdir)/xml.c'; fi`
+
+mcds-vcard.o: vcard.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(mcds_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT mcds-vcard.o -MD -MP -MF $(DEPDIR)/mcds-vcard.Tpo -c -o mcds-vcard.o `test -f 'vcard.c' || echo '$(srcdir)/'`vcard.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/mcds-vcard.Tpo $(DEPDIR)/mcds-vcard.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='vcard.c' object='mcds-vcard.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(mcds_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o mcds-vcard.o `test -f 'vcard.c' || echo '$(srcdir)/'`vcard.c
+
+mcds-vcard.obj: vcard.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(mcds_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT mcds-vcard.obj -MD -MP -MF $(DEPDIR)/mcds-vcard.Tpo -c -o mcds-vcard.obj `if test -f 'vcard.c'; then $(CYGPATH_W) 'vcard.c'; else $(CYGPATH_W) '$(srcdir)/vcard.c'; fi`
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/mcds-vcard.Tpo $(DEPDIR)/mcds-vcard.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='vcard.c' object='mcds-vcard.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(mcds_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o mcds-vcard.obj `if test -f 'vcard.c'; then $(CYGPATH_W) 'vcard.c'; else $(CYGPATH_W) '$(srcdir)/vcard.c'; fi`
 install-man1: $(dist_man_MANS)
 	@$(NORMAL_INSTALL)
 	@list1=''; \

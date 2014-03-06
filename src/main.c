@@ -49,6 +49,7 @@
 #include "mem.h"
 #include "curl.h"
 #include "carddav.h"
+#include "xml.h"
 
 
 /* Initalise extern definitions */
@@ -100,16 +101,14 @@ main(int argc, char **argv)
 	if (cinit(url, &hdl)) {
 		return(EXIT_FAILURE);
 	}
-
 	if (query(hdl, name, &res)) {
 		return(EXIT_FAILURE);
 	}
-
-	if (search(res)) {
+	if (cfini(&hdl)) {
 		return(EXIT_FAILURE);
 	}
 
-	if (cfini(&hdl)) {
+	if (parse(res)) {
 		return(EXIT_FAILURE);
 	}
 
