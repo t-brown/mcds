@@ -61,8 +61,6 @@ search(const char *card)
 	size_t rlen = 0;		/* Regex error string length */
 	char *rstr = NULL;		/* Regex error string */
 
-	size_t clen = 0;		/* Length of the card */
-
 	regex_t fnr;			/* Precompiled fn regex */
 	regmatch_t fnm[2];		/* Regex fn pattern match */
 	static const char fnp[] = "FN:(.*)";	/* Regex fn pattern */
@@ -121,6 +119,7 @@ search(const char *card)
 	/* Grab the field we wanted */
 	rerr = regexec(&flr, card, 3, flm, 0);
 	while (rerr == 0) {
+		/* For addresses convert ";" to "\n" */
 		printf("%.*s\t%s\n",
 				(int)(flm[2].rm_eo - flm[2].rm_so),
 				card + flm[2].rm_so, name);
@@ -142,104 +141,7 @@ rtn:
 	regfree(&fnr);
 	return(rerr);
 
-#if 0
-	while (rerr == 0) {
-	}
 
-	regex_t fd;			/* Precompiled full name regex */
-	regmatch_t fdm[3];		/* Regex pattern match */
-	const char fdt[] = "FN:(.*)\r"; /* Regex patter for full name */
-
-	regex_t fn;			/* Precompiled full name regex */
-	regmatch_t fpm[3];		/* Regex pattern match */
-	const char fpt[] = "FN:(.*)\r"; /* Regex patter for full name */
-
-	regex_t vcard;			/* Precompiled vcard regex */
-	regmatch_t vpm[3];		/* Regex pattern match */
-	char *vpt  = NULL;		/* Regex pattern */
-
-	int nlen = 0;			/* Length of the field */
-	int flen = 0;			/* Length of the field */
-	char name[1024]  = {0};		/* Temporary storage for the name */
-	char field[1024] = {0};		/* Temporary storage for the field */
-
-
-	/* Compile the regex pattern for the full name */
-	if ((rerr = regcomp(&fn, fpt, REG_EXTENDED|REG_NEWLINE)) != 0) {
-		rlen = regerror(rerr, &fn, NULL, 0);
-		rstr = xmalloc((rlen+1)*sizeof(char));
-		regerror(rerr, &fn, rstr, rlen);
-		warnx(_("Unable to compile regex '%s': %s\n"), fpt, rstr);
-		if (rstr) {
-			free(rstr);
-			rstr = NULL;
-		}
-		return(EXIT_FAILURE);
-	}
-
-	/* Create the regex pattern */
-	if (asprintf(&vpt, "^%s([A-Za-z;=])+:(.*)\r",
-				sterm_name[options.search]) == -1) {
-		warnx(_("Unable to build regex pattern."));
-		return(EXIT_FAILURE);
-	}
-
-	/* Compile the regex pattern */
-	if ((rerr = regcomp(&vcard, vpt, REG_EXTENDED|REG_NEWLINE)) != 0) {
-		rlen = regerror(rerr, &vcard, NULL, 0);
-		rstr = xmalloc((rlen+1)*sizeof(char));
-		regerror(rerr, &vcard, rstr, rlen);
-		warnx(_("Unable to compile regex '%s': %s\n"), vpt, rstr);
-		if (rstr) {
-			free(rstr);
-			rstr = NULL;
-		}
-		return(EXIT_FAILURE);
-	}
-
-	/* Grab the full name */
-	rerr = regexec(&fn, &res[0], 2, fpm, 0);
-	if (rerr != 0) {
-		regfree(&fn);
-		regfree(&vcard);
-		if (vpt) {
-			free(vpt);
-			vpt = NULL;
-		}
-		return(EXIT_FAILURE);
-	}
-
-	/* Copy over the name */
-	nlen = (int)(fpm[1].rm_eo - fpm[1].rm_so);
-	strncpy(name, res +fpm[1].rm_so, nlen);
-
-	/* move ourselves to beyond the name */
-	res += fpm[0].rm_eo;
-
-	/* Grab the field we wanted */
-	rerr = regexec(&vcard, res, 3, vpm, REG_NOTBOL);
-	flen = (int)(vpm[2].rm_eo - vpm[2].rm_so);
-	strncpy(field, res + vpm[2].rm_so, flen);
-
-	while (rerr == 0) {
-		/*
-		printf("%.*s\t%.*s\n",
-				(int)(vpm[2].rm_eo - vpm[2].rm_so),
-				res + vpm[2].rm_so,
-				(int)(fpm[1].rm_eo - fpm[1].rm_so),
-				res + fpm[1].rm_so);
-		*/
-
-		printf
-		res += vpm[0].rm_eo;
-		rerr = regexec(&fn, res, 2, fpm, REG_NOTBOL);
-		rerr = regexec(&vcard, res, 3, vpm, REG_NOTBOL);
-	}
-
-	/* For addresses convert ";" to "\n" */
-
-	regfree(&fn);
-#endif
 
 }
 

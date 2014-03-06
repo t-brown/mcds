@@ -87,7 +87,6 @@ cinit(const char *url, CURL **hdl)
 int
 cfini(CURL **hdl)
 {
-	CURLcode res = 0;       /* curl error response code */
 
 	if (*hdl == NULL) {
 		warnx(_("Unable to finalise null curl handle."));

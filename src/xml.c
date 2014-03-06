@@ -37,6 +37,7 @@
 #include "gettext.h"
 #include "defs.h"
 #include "xml.h"
+#include "vcard.h"
 
 /** Internal functions **/
 static void walk_tree(xmlDocPtr, xmlNode *);
