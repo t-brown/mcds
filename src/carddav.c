@@ -69,7 +69,7 @@ query(CURL *hdl, const char *name, char **result)
 {
 
 	char *s = NULL;
-	CURLcode res = 0;
+	CURLcode res = CURLE_OK;
 	struct curl_slist *hdrs = NULL;
 
 	if (*result != NULL) {

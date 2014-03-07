@@ -180,7 +180,7 @@ parse_argv(int argc, char **argv, char **name)
 			if (options.url) {
 				free(options.url);
 			}
-			options.url = xmalloc(strlen(optarg +1) * sizeof(char));
+			options.url = xmalloc((strlen(optarg)+1)*sizeof(char));
 			strcpy(options.url, optarg);
 			break;
 		default:
