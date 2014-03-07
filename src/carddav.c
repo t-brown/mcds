@@ -105,7 +105,7 @@ query(CURL *hdl, const char *name, char **result)
 	printf("\n");
 
 	if (options.verbose) {
-		fprintf(stderr, "Retrieved: \n%s\n", *result);
+		fprintf(stderr, "Retrieved:\n======\n%s\n======\n", *result);
 	}
 
 	curl_slist_free_all(hdrs);
@@ -139,7 +139,7 @@ query_cb(void *contents, size_t size, size_t nmemb, void *mem)
 	size_t len = 0;
 
 	len = size * nmemb;
-	*res = xmalloc(len);
+	*res = xmalloc(len+1);
 	memcpy(*res, contents, len);
 	(*res)[len] = '\0';
 
