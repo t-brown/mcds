@@ -47,6 +47,7 @@
 #include "defs.h"
 #include "options.h"
 #include "mem.h"
+#include "rc.h"
 #include "curl.h"
 #include "carddav.h"
 #include "xml.h"
@@ -61,11 +62,10 @@ char *sterm_name[] = {			/**< Search term names */
 
 struct opts options = {0};		/**< Program options */
 
-
 /* Internal functions */
 static void print_usage(void);
 static void print_version(void);
-static int  parse_argv(int, char **, char **, char **);
+static int  parse_argv(int, char **, char **);
 static const char *program_name(void);
 
 /**
@@ -81,7 +81,6 @@ int
 main(int argc, char **argv)
 {
 
-	char *url  = NULL;	/* CardDav URL */
 	char *name = NULL;	/* Name to search/query for */
 	char *res  = NULL;	/* query result */
 	CURL *hdl  = NULL;	/* Curl handle */
@@ -94,11 +93,13 @@ main(int argc, char **argv)
 	textdomain(PACKAGE);
 #endif
 
-	if (parse_argv(argc, argv, &url, &name)) {
+	read_rc();
+
+	if (parse_argv(argc, argv, &name)) {
 		return(EXIT_FAILURE);
 	}
 
-	if (cinit(url, &hdl)) {
+	if (cinit(&hdl)) {
 		return(EXIT_FAILURE);
 	}
 	if (query(hdl, name, &res)) {
@@ -112,9 +113,13 @@ main(int argc, char **argv)
 		return(EXIT_FAILURE);
 	}
 
-	if (url) {
-		free(url);
-		url = NULL;
+	if (options.url) {
+		free(options.url);
+		options.url = NULL;
+	}
+	if (res) {
+		free(res);
+		res = NULL;
 	}
 
 	return(EXIT_SUCCESS);
@@ -129,7 +134,7 @@ main(int argc, char **argv)
  * \retval 0 If there were no errors.
  **/
 static int
-parse_argv(int argc, char **argv, char **url, char **name)
+parse_argv(int argc, char **argv, char **name)
 {
 	int opt = 0;
 	int opt_index = 0;
@@ -172,8 +177,11 @@ parse_argv(int argc, char **argv, char **url, char **name)
 			}
 			break;
 		case 'u':
-			*url = xmalloc(strlen(optarg +1) * sizeof(char));
-			strcpy(*url, optarg);
+			if (options.url) {
+				free(options.url);
+			}
+			options.url = xmalloc(strlen(optarg +1) * sizeof(char));
+			strcpy(options.url, optarg);
 			break;
 		default:
 			print_usage();
@@ -193,7 +201,9 @@ parse_argv(int argc, char **argv, char **url, char **name)
 
 	if (options.verbose) {
 		fprintf(stderr, "%s options are:\n", program_name());
-		fprintf(stderr, "  URL        : %s\n", *url);
+		fprintf(stderr, "  URL        : %s\n", options.url);
+		fprintf(stderr, "  SSL Verify : %d\n", options.verify);
+		fprintf(stderr, "  Use .netrc : %d\n", options.netrc);
 		fprintf(stderr, "  Search name: %s\n", *name);
 		fprintf(stderr, "  Query      : %s\n",
 				sterm_name[options.search]);

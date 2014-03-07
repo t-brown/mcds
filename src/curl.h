@@ -33,7 +33,7 @@ extern "C"
 #endif
 
 /** Initialise a curl handle */
-int cinit(const char *, CURL **);
+int cinit(CURL **);
 
 /** Finalise a curl handle */
 int cfini(CURL **);

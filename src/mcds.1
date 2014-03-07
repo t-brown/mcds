@@ -58,10 +58,24 @@ to print debugging messages about its progress.
 .Pp
 By default
 .Nm
-will connect over SSL without verifying the certificates and will use Basic
-Authentication using the username and password provided in your
+if you are connecting over SSL it will not verify the certificates and
+will use Basic Authentication using the username and password provided
+in your
 .Pa ~/.netrc
 file.
+.Pp
+The configuration file
+.Pa ~/.mcdsrc
+will be read if it exists, however command line arguments will override
+any values in the configuration file. The configuration file is of the
+key, value pairs on a line separated by an equals sign. The only known
+keys are
+.Ad url , verify , netrc .
+An example
+.Pa ~/.mcdsrc
+is provided in the
+.Sx EXAMPLES
+section.
 .Sh EXIT STATUS
 .Ex -std
 .Sh EXAMPLES
@@ -74,6 +88,7 @@ Which could return a list of people and email addresses as
 .Bd -literal -offset indent
 ben@example.net        Ben Smith
 .Ed
+.Pp
 One can therefore use
 .Nm
 as a
@@ -84,10 +99,25 @@ file.
 .Bd -literal -offset indent
 set query_command="mcds -u https://localhost/caldav.php/username/addressbook/ '%s'"
 .Ed
+.Pp
+To make this query more succinct one can specify in
+.Pa ~/.mcdsrc
+the following:
+.Bd -literal -offset indent
+url = https://localhost/caldav.php/username/addressbook/
+verify = no
+netrc = yes
+.Ed
+.Pp
+So making the mutt query command simply
+.Bd -literal -offset indent
+set query_command="mcds '%s'"
+.Ed
 .Sh SEE ALSO
 .Xr curl 1 ,
 .Xr mutt 1 ,
-.Xr muttrc 5 .
+.Xr muttrc 5 ,
+.Xr netrc 5 .
 .Sh STANDARDS
 The
 .Nm

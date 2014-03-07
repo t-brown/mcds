@@ -17,50 +17,29 @@
  */
 
 /**
- * \file options.h
- * Internal definitions for program options.
+ * \file rc.h
+ * Internal definitions for reading the rc file.
  *
- * \ingroup options
+ * \ingroup rc
  * \{
  **/
 
-#ifndef MCDS_OPTIONS_H
-#define MCDS_OPTIONS_H
+#ifndef MCDS_RC_H
+#define MCDS_RC_H
 
 #ifdef __cplusplus
 extern "C"
 {
 #endif
 
-#define STERMS_TABLE            \
-	X(email,       "EMAIL") \
-	X(address,     "ADR")   \
-	X(telephone,   "TEL")
-
-#define X(a, b) a,
-enum s_terms {
-	STERMS_TABLE
-};
-#undef X
-
-/** Program command line options **/
-struct opts {
-	int verbose;
-	int verify;
-	int netrc;
-	enum s_terms search;
-	char *url;
-};
-
-/** Extern declarations **/
-extern struct opts options;
-extern char *sterm_name[];
+/** Read the rc file */
+int read_rc(void);
 
 #ifdef __cplusplus
 }                               /* extern "C" */
 #endif
 
-#endif                          /* MCDS_OPTIONS_H */
+#endif                          /* MCDS_RC_H */
 /**
  * \}
  **/

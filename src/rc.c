@@ -1,0 +1,128 @@
+
+/*
+ * Copyright (C) 2014  Timothy Brown
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ */
+
+/**
+ * \file rc.c
+ * Routines to read a configuration/rc file.
+ *
+ * \ingroup rc
+ * \{
+ **/
+
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <err.h>
+#include <locale.h>
+#include <unistd.h>
+#include "gettext.h"
+#include "defs.h"
+#include "options.h"
+#include "mem.h"
+
+#ifndef LINE_MAX
+#define LINE_MAX          sysconf(_SC_LINE_MAX)
+#endif
+
+/**
+ * \retval 0 If there were no errors.
+ * \retval 1 If an error was encounted.
+ **/
+int
+read_rc(void)
+{
+
+	int i  = 0;                    /* Temporary loop indexer */
+	int ln = 0;                    /* Line number */
+	int len = 0;                   /* String length */
+	const char file[] = ".mcdsrc"; /* Rc file name */
+	char *home = NULL;             /* Home directory */
+	char *abs_file = NULL;         /* Absolute filename */
+	FILE *ifd = NULL;              /* File descriptor */
+	char line[LINE_MAX];           /* Read line from file */
+	char *lptr = NULL;             /* Line pointer for strsep */
+	char *tmp  = NULL;            /* Temporary pointer for read variables */
+	char *vals[2] = {0};           /* key, value read from a line */
+
+	home = getenv("HOME");
+	if (home == NULL) {
+		warnx(_("Unable to obtain home directory"));
+		return(EXIT_FAILURE);
+	}
+
+	if (asprintf(&abs_file, "%s/%s", home, file) == -1) {
+		warnx(_("Unable to build rc file string"));
+		return(EXIT_FAILURE);
+	}
+
+	/* fail silently in case the user does not have an rc file */
+	if ((ifd = fopen(abs_file, "r")) == NULL) {
+		return(EXIT_FAILURE);
+	}
+
+	while (fgets(line, LINE_MAX, ifd) != NULL) {
+		++ln;
+		lptr = line;
+		i = 0;
+		while ((tmp = strsep(&lptr, " \t=")) != NULL) {
+			if (tmp[0] != '\0') {
+				len = strlen(tmp);
+				vals[i] = xmalloc(len +1);
+				if (tmp[len-1] == '\n') {
+					strncpy(vals[i], tmp, len-1);
+				} else {
+					strncpy(vals[i], tmp, len);
+				}
+				++i;
+			}
+		}
+		if (strncmp("url", vals[0], 3) == 0) {
+			if (options.url == NULL) {
+				len = strlen(vals[1]);
+				options.url = xmalloc(len+1);
+				strncpy(options.url, vals[1], len);
+			}
+		} else if (strncmp("verify", vals[0], 7) == 0) {
+			if ((vals[1][0] == 'y') || (vals[1][0] == 'Y')) {
+				options.verify = 1;
+			} else {
+				options.verify = 0;
+			}
+		} else if (strncmp("netrc", vals[0], 5) == 0) {
+			if ((vals[1][0] == 'y') || (vals[1][0] == 'Y')) {
+				options.netrc = 1;
+			} else {
+				options.netrc = 0;
+			}
+		}
+	}
+
+	if (fclose(ifd)) {
+		warn(_("Unable to close %s"), abs_file);
+	}
+	return(EXIT_SUCCESS);
+}
+
+/**
+ * \}
+ **/

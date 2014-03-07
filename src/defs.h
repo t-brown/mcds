@@ -37,7 +37,8 @@ extern "C"
 #define _GNU_SOURCE
 #endif
 
-#define _(x) gettext(x)
+#define _(x)              gettext(x)
+
 
 /**
  * Compiler __attribute__ extensions

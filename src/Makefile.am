@@ -11,13 +11,15 @@ mcds_LDFLAGS = $(LTLIBINTL)			\
 	       $(CURL_LIBS)			\
 	       $(XML_LIBS)
 
-mcds_SOURCES = defs.h		options.h	\
+mcds_SOURCES = defs.h				\
+	       options.h			\
 	       main.c				\
 	       mem.c		mem.h		\
 	       curl.c		curl.h		\
 	       carddav.c	carddav.h	\
 	       xml.c		xml.h		\
-	       vcard.c		vcard.h
+	       vcard.c		vcard.h		\
+	       rc.c		rc.h
 
 noinst_HEADERS = gettext.h
 dist_man_MANS = mcds.1

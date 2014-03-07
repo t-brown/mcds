@@ -36,6 +36,7 @@
 #include "gettext.h"
 #include "defs.h"
 #include "curl.h"
+#include "options.h"
 
 /**
  * Initalise a curl handle.
@@ -47,17 +48,15 @@
  * \retval 1 If the initialization failed.
  **/
 int
-cinit(const char *url, CURL **hdl)
+cinit(CURL **hdl)
 {
-	CURLcode res = 0;       /* curl error response code */
 
 	if (*hdl != NULL) {
 		warnx(_("Unable to initialize non-null curl handle."));
 		return(EXIT_FAILURE);
 	}
 
-	res = curl_global_init(CURL_GLOBAL_DEFAULT);
-	if (res) {
+	if (curl_global_init(CURL_GLOBAL_DEFAULT)) {
 		warnx(_("Unable to initialize curl."));
 		return(EXIT_FAILURE);
 	}
@@ -68,10 +67,22 @@ cinit(const char *url, CURL **hdl)
 		return(EXIT_FAILURE);
 	}
 
-	res = curl_easy_setopt(*hdl, CURLOPT_URL, url);
-	res = curl_easy_setopt(*hdl, CURLOPT_SSL_VERIFYPEER, 0L);
-	res = curl_easy_setopt(*hdl, CURLOPT_NETRC, 1L);
-	res = curl_easy_setopt(*hdl, CURLOPT_HTTPAUTH, CURLAUTH_ANY);
+	if (curl_easy_setopt(*hdl, CURLOPT_URL, options.url)) {
+		warnx(_("Unable to set curls URL."));
+		return(EXIT_FAILURE);
+	}
+	if (curl_easy_setopt(*hdl, CURLOPT_SSL_VERIFYPEER, options.verify)) {
+		warnx(_("Unable to set curls SSL verification."));
+		return(EXIT_FAILURE);
+	}
+	if (curl_easy_setopt(*hdl, CURLOPT_NETRC, options.netrc)) {
+		warnx(_("Unable to set curls .netrc option."));
+		return(EXIT_FAILURE);
+	}
+	if (curl_easy_setopt(*hdl, CURLOPT_HTTPAUTH, CURLAUTH_ANY)) {
+		warnx(_("Unable to set curls HTTP auth method."));
+		return(EXIT_FAILURE);
+	}
 
 	return(EXIT_SUCCESS);
 }
