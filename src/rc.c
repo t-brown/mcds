@@ -94,6 +94,9 @@ read_rc(void)
 					strncpy(vals[i], tmp, len);
 				}
 				++i;
+				if (i == 2) {
+					break;
+				}
 			}
 		}
 		if (strncmp("url", vals[0], 3) == 0) {
