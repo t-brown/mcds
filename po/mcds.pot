@@ -1,0 +1,139 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR Free Software Foundation, Inc.
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: mcds 0.2\n"
+"Report-Msgid-Bugs-To: <Timothy.Brown@terralimno.com>\n"
+"POT-Creation-Date: 2014-03-08 09:51-0700\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=CHARSET\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: src/carddav.c:76
+msgid "Will not to write results to non-null pointer."
+msgstr ""
+
+#: src/carddav.c:81
+msgid "Unable to build search string."
+msgstr ""
+
+#: src/carddav.c:100
+#, c-format
+msgid "Unable to search for %s: %s"
+msgstr ""
+
+#: src/curl.c:55
+msgid "Unable to initialize non-null curl handle."
+msgstr ""
+
+#: src/curl.c:60
+msgid "Unable to initialize curl."
+msgstr ""
+
+#: src/curl.c:66
+msgid "Unable to initialize curl handle."
+msgstr ""
+
+#: src/curl.c:71
+msgid "Unable to set curls URL."
+msgstr ""
+
+#: src/curl.c:75
+msgid "Unable to set curls SSL verification."
+msgstr ""
+
+#: src/curl.c:79
+msgid "Unable to set curls .netrc option."
+msgstr ""
+
+#: src/curl.c:83
+msgid "Unable to set curls HTTP auth method."
+msgstr ""
+
+#: src/curl.c:103
+msgid "Unable to finalise null curl handle."
+msgstr ""
+
+#: src/main.c:195
+msgid "Must specify a name to search for."
+msgstr ""
+
+#: src/main.c:222
+#, c-format
+msgid ""
+"usage: %s [-h] [-V] [-v] [-s a|t|e] [-u URL] name\n"
+"  -h, --help         Display this help and exit.\n"
+"  -V, --version      Display version information and exit.\n"
+"  -v, --verbose      Verbose mode.\n"
+"  -s, --search a|t|e Search term. Known terms are:\n"
+"                     a = address\n"
+"                     t = telephone\n"
+"                     e = email\n"
+"  -u, --url          The URL of the carddav server to query.\n"
+msgstr ""
+
+#: src/main.c:243
+#, c-format
+msgid "%s (GNU %s) %s\n"
+msgstr ""
+
+#: src/main.c:244
+#, c-format
+msgid ""
+"Copyright (C) %s Timothy Brown.\n"
+"License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl."
+"html>\n"
+"This is free software: you are free to change and redistribute it.\n"
+"There is NO WARRANTY, to the extent permitted by law.\n"
+"\n"
+msgstr ""
+
+#: src/main.c:249
+#, c-format
+msgid ""
+"Compiled on %s at %s.\n"
+"\n"
+msgstr ""
+
+#: src/mem.c:60
+#, c-format
+msgid "out of memory (unable to allocate %ld bytes)"
+msgstr ""
+
+#: src/rc.c:69
+msgid "Unable to obtain home directory"
+msgstr ""
+
+#: src/rc.c:74
+msgid "Unable to build rc file string"
+msgstr ""
+
+#: src/rc.c:124
+#, c-format
+msgid "Unable to close %s"
+msgstr ""
+
+#: src/vcard.c:78
+msgid "Unable to build regex pattern."
+msgstr ""
+
+#: src/vcard.c:87 src/vcard.c:100
+#, c-format
+msgid "Unable to compile regex '%s': %s\n"
+msgstr ""
+
+#: src/xml.c:63
+msgid "Unable to generate an xml document"
+msgstr ""
+
+#: src/xml.c:69
+msgid "Unable to get the root node of the xml document"
+msgstr ""
