@@ -12,8 +12,8 @@
 GETTEXT_MACRO_VERSION = 0.18
 
 PACKAGE = mcds
-VERSION = 0.2
-PACKAGE_BUGREPORT = Timothy.Brown@terralimno.com
+VERSION = 0.4
+PACKAGE_BUGREPORT = tbrown@freeshell.org
 
 SHELL = /bin/sh
 
@@ -162,7 +162,7 @@ $(DOMAIN).pot-update: $(POTFILES) $(srcdir)/POTFILES.in remove-potcdate.sed
 	      --files-from=$(srcdir)/POTFILES.in \
 	      --copyright-holder='$(COPYRIGHT_HOLDER)' \
 	      --package-name="$${package_gnu}mcds" \
-	      --package-version='0.2' \
+	      --package-version='0.4' \
 	      --msgid-bugs-address="$$msgid_bugs_address" \
 	    ;; \
 	esac

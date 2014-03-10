@@ -12,8 +12,8 @@
 GETTEXT_MACRO_VERSION = 0.18
 
 PACKAGE = mcds
-VERSION = 0.2
-PACKAGE_BUGREPORT = Timothy.Brown@terralimno.com
+VERSION = 0.4
+PACKAGE_BUGREPORT = tbrown@freeshell.org
 
 SHELL = /bin/sh
 
@@ -120,7 +120,7 @@ COPYRIGHT_HOLDER = Free Software Foundation, Inc.
 # It can be your email address, or a mailing list address where translators
 # can write to without being subscribed, or the URL of a web page through
 # which the translators can contact you.
-MSGID_BUGS_ADDRESS = <Timothy.Brown@terralimno.com>
+MSGID_BUGS_ADDRESS = <tbrown@freeshell.org>
 
 # This is the list of locale categories, beyond LC_MESSAGES, for which the
 # message catalogs shall be used.  It is usually empty.
@@ -222,7 +222,7 @@ $(DOMAIN).pot-update: $(POTFILES) $(srcdir)/POTFILES.in remove-potcdate.sed
 	      --files-from=$(srcdir)/POTFILES.in \
 	      --copyright-holder='$(COPYRIGHT_HOLDER)' \
 	      --package-name="$${package_gnu}mcds" \
-	      --package-version='0.2' \
+	      --package-version='0.4' \
 	      --msgid-bugs-address="$$msgid_bugs_address" \
 	    ;; \
 	esac

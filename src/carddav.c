@@ -47,7 +47,7 @@ static size_t query_cb(void *, size_t, size_t, void *);
 /** Search string **/
 static const char sterm[] =
 "<?xml version='1.0' encoding='utf-8' ?>"
-"<C:addressbook-query xmlns:D='DAV:'xmlns:C='urn:ietf:params:xml:ns:carddav'>"
+"<C:addressbook-query xmlns:D='DAV:' xmlns:C='urn:ietf:params:xml:ns:carddav'>"
 "<D:prop><C:address-data><C:prop name='FN'/><C:prop name='%s'/>"
 "</C:address-data></D:prop>"
 "<C:filter test='anyof'><C:prop-filter name='FN'>"

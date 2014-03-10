@@ -9,7 +9,7 @@
 	* po.m4: Upgrade to gettext-0.18.1.
 	* progtest.m4: Upgrade to gettext-0.18.1.
 
-2014-03-07  Timothy Brown  <tbrown@terralimno.com>
+2014-03-07  Timothy Brown  <tbrown@freeshell.org>
 
 	Bug fix (malloc incorrect brackets).
 	Bug fix in argument parsing routine. I had the +1 inside of the
@@ -18,7 +18,7 @@
 	Also changed the default value of the curl error code to be CURLE_OK
 	instead of 0.
 
-2014-03-07  Timothy Brown  <tbrown@terralimno.com>
+2014-03-07  Timothy Brown  <tbrown@freeshell.org>
 
 	Bug fix in carddav.
 	Bug fix in terminating the response string. I was under allocting the
@@ -30,7 +30,7 @@
 
 	Adding the ability to read a configuration file.
 
-2014-03-06  Timothy Brown  <tbrown@terralimno.com>
+2014-03-06  Timothy Brown  <tbrown@freeshell.org>
 
 	Code clean up. Adding C99 standard.
 	Adding the C99 standard for autoconf and the removal of unused
@@ -39,20 +39,20 @@
 	Bugfix. Renaming function.
 	Missed a rename of the xml walk_nodes to walk_tree function.
 
-	Merge branch 'master' of https://code.terralimno.com/mcds
+	Merge branch 'master' of https://code.freeshell.org/mcds
 
 	Split the parsing into xml and regex.
 	Decided to bite the bullet and use libxml to do the initial parsing
 	of the carddav data received. Then when a vcard is found, pass it
 	off to a regex parser.
 
-2014-03-05  Timothy Brown  <tbrown@terralimno.com>
+2014-03-05  Timothy Brown  <tbrown@freeshell.org>
 
 	Upping the revision number.
 
 	Updated the output to conform to mutt.
 
-2014-03-05  Timothy Brown  <tbrown@terralimno.com>
+2014-03-05  Timothy Brown  <tbrown@freeshell.org>
 
 	Adding the ability to print the full name.
 	The mutt query command expects the results along the lines of:
@@ -67,7 +67,7 @@
 	matching addresses, return a non-zero exit code and a one line
 	error message.
 
-2014-03-05  Timothy Brown  <tbrown@terralimno.com>
+2014-03-05  Timothy Brown  <tbrown@freeshell.org>
 
 	Updated manpage.
 	I had left in a reference to tbrown as the user in the carddav url.
@@ -80,7 +80,7 @@
 
 	Updating Makefile.am to include man-page.
 
-2014-03-05  Timothy Brown  <tbrown@terralimno.com>
+2014-03-05  Timothy Brown  <tbrown@freeshell.org>
 
 	Updated the usage statement and added a man page.
 	Updated the usage statement to include the ability to specify email
@@ -88,7 +88,7 @@
 
 	Added a first pass of a man page.
 
-2014-03-05  Timothy Brown  <tbrown@terralimno.com>
+2014-03-05  Timothy Brown  <tbrown@freeshell.org>
 
 	Clean up and build on a debian machine.
 
@@ -100,7 +100,7 @@
 
 	Adding files to the build-aux instead of sym links.
 
-2014-03-05  Timothy Brown  <tbrown@terralimno.com>
+2014-03-05  Timothy Brown  <tbrown@freeshell.org>
 
 	Email query is working.
 	The email query/regex is working. However addresses still need to
@@ -108,7 +108,7 @@
 
 	Possibly need to check how mutt wants the query returned as.
 
-2014-03-04  Timothy Brown  <tbrown@terralimno.com>
+2014-03-04  Timothy Brown  <tbrown@freeshell.org>
 
 	Updated the CardDav search fields.
 	Updated the CardDav search fields to be correct. Added a comment to
@@ -118,13 +118,13 @@
 	Cleaned up the options to be able to use x-macros.
 	Added the m4 build macros.
 
-2014-03-03  Timothy Brown  <tbrown@terralimno.com>
+2014-03-03  Timothy Brown  <tbrown@freeshell.org>
 
 	Big update....
 	Adding options, mem/malloc wrappers and code to construct the
 	curl request and carddav search.
 
-2014-02-26  Timothy Brown  <tbrown@terralimno.com>
+2014-02-26  Timothy Brown  <tbrown@freeshell.org>
 
 	Full autotools project.
 	Sorted out the gettext issues and made it into a full/proper
