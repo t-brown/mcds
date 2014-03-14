@@ -87,7 +87,7 @@ query(CURL *hdl, const char *name, char **result)
 	}
 
 	hdrs = curl_slist_append(hdrs, "Content-Type: text/xml");
-	hdrs = curl_slist_append(hdrs, "Brief:t");
+	hdrs = curl_slist_append(hdrs, "Depth: 1");
 
 	curl_easy_setopt(hdl, CURLOPT_CUSTOMREQUEST, "REPORT");
 	curl_easy_setopt(hdl, CURLOPT_POSTFIELDS, s);
@@ -103,6 +103,11 @@ query(CURL *hdl, const char *name, char **result)
 	}
 	/* Write out a blank line for mutt */
 	printf("\n");
+
+	if (*result == NULL) {
+		warnx(_("Unable to obtain a result."));
+		return(EXIT_FAILURE);
+	}
 
 	if (options.verbose) {
 		fprintf(stderr, "Retrieved:\n======\n%s\n======\n", *result);
