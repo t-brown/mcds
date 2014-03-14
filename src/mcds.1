@@ -46,6 +46,17 @@ The following options are available:
 Display a short help message and exit.
 .It Fl s Ar a|t|e
 The query term to return. Known terms are:
+.Bl -enum -offset indent -compact
+.It
+.Em a
+Query for the address field.
+.It
+.Em t
+Query for the telephone field.
+.It
+.Em e
+Query for the email field. This is the default.
+.El
 .It Fl u Ar URL
 The carddav URL.
 .It Fl V
