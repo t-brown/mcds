@@ -51,4 +51,13 @@ mcds can make use of an rc file (${HOME}/.mcdrc). Please read the
 accompanying man page for more examples and the specifications of the
 rc file.
 
+3.1 Davical
+-----------
 
+The typical URL to query for Davical ( http://www.davical.org/ ) is
+  https://example.org/caldav.php/username/addresses
+
+3.2 Owncloud
+------------
+The typical URL to query for Ownclod ( http://owncloud.org// ) is
+  http://demo.owncloud.org/remote.php/carddav/addressbooks/username/contacts

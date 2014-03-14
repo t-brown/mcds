@@ -1,13 +1,20 @@
-2014-03-05  gettextize  <bug-gnu-gettext@gnu.org>
+2014-03-14  Timothy Brown  <tbrown@freeshell.org>
 
-	* gettext.m4: Upgrade to gettext-0.18.1.
-	* iconv.m4: Upgrade to gettext-0.18.1.
-	* lib-ld.m4: Upgrade to gettext-0.18.1.
-	* lib-link.m4: Upgrade to gettext-0.18.1.
-	* lib-prefix.m4: Upgrade to gettext-0.18.1.
-	* nls.m4: Upgrade to gettext-0.18.1.
-	* po.m4: Upgrade to gettext-0.18.1.
-	* progtest.m4: Upgrade to gettext-0.18.1.
+	Bug fix in the carddav (webdav) headders.
+	When querying against owncloud (sabredav.org) we must specify the
+	depth in the headers and not saying breif is true.
+
+2014-03-10  Timothy Brown  <tbrown@freeshell.org>
+
+	Bugfix in xml namespace.
+	Bug fix from Chip Black, there needs to be space between the xml
+	namespace definitions for Apple's Calendar and Card server.
+
+2014-03-08  Timothy Brown  <tbrown@freeshell.org>
+
+	Clean up for v0.3 release.
+	Cleaning up all the supporting files in order to get ready for
+	the 0.3 release.
 
 2014-03-07  Timothy Brown  <tbrown@freeshell.org>
 
@@ -61,11 +68,11 @@
 		blong@fiction.net       Brandon Long    mutt and more
 		roessler@guug.de        Thomas Roessler mutt pgp
 
-	That is a one line message, then each matching response on a single
-	line, each line containing a tab separated address then name then
-	some other optional information. On error, or if there are no
-	matching addresses, return a non-zero exit code and a one line
-	error message.
+	That is a one line message, then each matching response on a
+	single line, each line containing a tab separated address then
+	name then some other optional information. On error, or if there
+	are no matching addresses, return a non-zero exit code and a
+	one line error message.
 
 2014-03-05  Timothy Brown  <tbrown@freeshell.org>
 
