@@ -35,29 +35,29 @@ INSTALL_DATA = ${INSTALL} -m 644
 # We use $(mkdir_p).
 # In automake <= 1.9.x, $(mkdir_p) is defined either as "mkdir -p --" or as
 # "$(mkinstalldirs)" or as "$(install_sh) -d". For these automake versions,
-# ${SHELL} /home/tbrown/mcds/build-aux/install-sh does not start with $(SHELL), so we add it.
-# In automake >= 1.10, /bin/mkdir -p is derived from ${MKDIR_P}, which is defined
+# ${SHELL} /Users/tbrown/Source/mcds/build-aux/install-sh does not start with $(SHELL), so we add it.
+# In automake >= 1.10, $(top_builddir)/build-aux/install-sh -c -d is derived from ${MKDIR_P}, which is defined
 # either as "/path/to/mkdir -p" or ".../install-sh -c -d". For these automake
 # versions, $(mkinstalldirs) and $(install_sh) are unused.
-mkinstalldirs = $(SHELL) ${SHELL} /home/tbrown/mcds/build-aux/install-sh -d
-install_sh = $(SHELL) ${SHELL} /home/tbrown/mcds/build-aux/install-sh
-MKDIR_P = /bin/mkdir -p
-mkdir_p = /bin/mkdir -p
+mkinstalldirs = $(SHELL) ${SHELL} /Users/tbrown/Source/mcds/build-aux/install-sh -d
+install_sh = $(SHELL) ${SHELL} /Users/tbrown/Source/mcds/build-aux/install-sh
+MKDIR_P = ../build-aux/install-sh -c -d
+mkdir_p = $(top_builddir)/build-aux/install-sh -c -d
 
-GMSGFMT_ = /usr/bin/msgfmt
-GMSGFMT_no = /usr/bin/msgfmt
-GMSGFMT_yes = /usr/bin/msgfmt
+GMSGFMT_ = /opt/local/bin/msgfmt
+GMSGFMT_no = /opt/local/bin/msgfmt
+GMSGFMT_yes = /opt/local/bin/msgfmt
 GMSGFMT = $(GMSGFMT_$(USE_MSGCTXT))
-MSGFMT_ = /usr/bin/msgfmt
-MSGFMT_no = /usr/bin/msgfmt
-MSGFMT_yes = /usr/bin/msgfmt
+MSGFMT_ = /opt/local/bin/msgfmt
+MSGFMT_no = /opt/local/bin/msgfmt
+MSGFMT_yes = /opt/local/bin/msgfmt
 MSGFMT = $(MSGFMT_$(USE_MSGCTXT))
-XGETTEXT_ = /usr/bin/xgettext
-XGETTEXT_no = /usr/bin/xgettext
-XGETTEXT_yes = /usr/bin/xgettext
+XGETTEXT_ = /opt/local/bin/xgettext
+XGETTEXT_no = /opt/local/bin/xgettext
+XGETTEXT_yes = /opt/local/bin/xgettext
 XGETTEXT = $(XGETTEXT_$(USE_MSGCTXT))
 MSGMERGE = msgmerge
-MSGMERGE_UPDATE = /usr/bin/msgmerge --update
+MSGMERGE_UPDATE = /opt/local/bin/msgmerge --update
 MSGINIT = msginit
 MSGCONV = msgconv
 MSGFILTER = msgfilter
@@ -96,7 +96,7 @@ CATALOGS = @CATALOGS@
 	mv t-$@ $@
 
 
-all: check-macro-version all-yes
+all: check-macro-version all-no
 
 all-yes: stamp-po
 all-no:
@@ -209,7 +209,7 @@ $(POFILES): $(srcdir)/$(DOMAIN).pot
 
 install: install-exec install-data
 install-exec:
-install-data: install-data-yes
+install-data: install-data-no
 	if test "$(PACKAGE)" = "gettext-tools"; then \
 	  $(mkdir_p) $(DESTDIR)$(gettextsrcdir); \
 	  for file in $(DISTFILES.common) Makevars.template; do \
@@ -267,7 +267,7 @@ install-strip: install
 
 installdirs: installdirs-exec installdirs-data
 installdirs-exec:
-installdirs-data: installdirs-data-yes
+installdirs-data: installdirs-data-no
 	if test "$(PACKAGE)" = "gettext-tools"; then \
 	  $(mkdir_p) $(DESTDIR)$(gettextsrcdir); \
 	else \
@@ -311,7 +311,7 @@ installcheck:
 
 uninstall: uninstall-exec uninstall-data
 uninstall-exec:
-uninstall-data: uninstall-data-yes
+uninstall-data: uninstall-data-no
 	if test "$(PACKAGE)" = "gettext-tools"; then \
 	  for file in $(DISTFILES.common) Makevars.template; do \
 	    rm -f $(DESTDIR)$(gettextsrcdir)/$$file; \
@@ -431,11 +431,11 @@ update-gmo: Makefile $(GMOFILES)
 
 # Recreate Makefile by invoking config.status. Explicitly invoke the shell,
 # because execution permission bits may not work on the current file system.
-# Use /bin/bash, which is the shell determined by autoconf for the use by its
+# Use /bin/sh, which is the shell determined by autoconf for the use by its
 # scripts, not $(SHELL) which is hardwired to /bin/sh and may be deficient.
 Makefile: Makefile.in.in Makevars $(top_builddir)/config.status @POMAKEFILEDEPS@
 	cd $(top_builddir) \
-	  && /bin/bash ./config.status $(subdir)/$@.in po-directories
+	  && /bin/sh ./config.status $(subdir)/$@.in po-directories
 
 force:
 

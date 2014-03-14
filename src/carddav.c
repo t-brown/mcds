@@ -83,7 +83,7 @@ query(CURL *hdl, const char *name, char **result)
 	}
 
 	if (options.verbose) {
-		fprintf(stderr, "Searching for:\n%s\n", s);
+		fprintf(stderr, "  Sending    :\n%s\n", s);
 	}
 
 	hdrs = curl_slist_append(hdrs, "Content-Type: text/xml");

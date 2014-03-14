@@ -71,6 +71,7 @@ search(const char *card)
 
 	size_t len = 0;			/* Length of the name */
 	char *name = NULL;		/* Name field */
+	size_t flen = 0;		/* Length of the field */
 
 	/* Create the regex pattern for the field */
 	if (asprintf(&flp, "^%s([A-Za-z;=])+:(.*)",
@@ -114,15 +115,21 @@ search(const char *card)
 	len = (int)(fnm[1].rm_eo - fnm[1].rm_so);
 	name = xmalloc(len+1);
 	memcpy(name, card+fnm[1].rm_so, len);
-	name[len] ='\0';
+	if (name[len-1] == '\r') {
+		name[len-1] = '\0';
+	} else {
+		name[len] ='\0';
+	}
 
 	/* Grab the field we wanted */
 	rerr = regexec(&flr, card, 3, flm, 0);
 	while (rerr == 0) {
 		/* For addresses convert ";" to "\n" */
-		printf("%.*s\t%s\n",
-				(int)(flm[2].rm_eo - flm[2].rm_so),
-				card + flm[2].rm_so, name);
+		flen = flm[2].rm_eo - flm[2].rm_so;
+		if (card[flm[2].rm_eo -1] == '\r') {
+			flen -= 1;
+		}
+		printf("%.*s\t%s\n", (int)flen, card + flm[2].rm_so, name);
 
 		card += flm[0].rm_eo;
 		rerr = regexec(&flr, card, 3, flm, REG_NOTBOL);

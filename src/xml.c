@@ -38,6 +38,7 @@
 #include "defs.h"
 #include "xml.h"
 #include "vcard.h"
+#include "options.h"
 
 /** Internal functions **/
 static void walk_tree(xmlDocPtr, xmlNode *);
@@ -101,6 +102,11 @@ walk_tree(xmlDocPtr doc, xmlNode *node)
 					data = xmlNodeListGetString(doc,
 							cur->xmlChildrenNode,
 							1);
+					if (options.verbose) {
+						fprintf(stderr,
+							_("Data:\n%s\n"),
+							data);
+					}
 					search((const char *)data);
 					xmlFree(data);
 				}
