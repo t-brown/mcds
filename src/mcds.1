@@ -67,11 +67,10 @@ Verbose mode. Causes
 to print debugging messages about its progress.
 .El
 .Pp
-By default
+By default if you are connecting over SSL
 .Nm
-if you are connecting over SSL it will not verify the certificates and
-will use Basic Authentication using the username and password provided
-in your
+will not verify the certificates and will use Basic Authentication
+using the username and password provided in your
 .Pa ~/.netrc
 file.
 .Pp
@@ -79,8 +78,8 @@ The configuration file
 .Pa ~/.mcdsrc
 will be read if it exists, however command line arguments will override
 any values in the configuration file. The configuration file is of the
-key, value pairs on a line separated by an equals sign. The only known
-keys are
+key, value pairs form on a line separated by an equals sign. The only
+known keys are
 .Ad url , verify , netrc .
 An example
 .Pa ~/.mcdsrc

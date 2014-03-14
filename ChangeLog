@@ -1,5 +1,20 @@
 2014-03-14  Timothy Brown  <tbrown@freeshell.org>
 
+	Adding more debug info and correcting for \r's.
+	Adding a debug section in the xml parsing.
+	It seems owncloud/sabredav encode the \r's which libxml converts
+	back to \r's so in the vcard regex/printing we should check to
+	make sure they are not the second to last character, if they are
+	we remove them.
+
+	Adding the known query terms.
+	In reading the man page, I forgot to add the known terms
+	to the argument list.
+
+	Adding example URLs to the README.
+
+	Updating the ChangeLog and version number.
+
 	Bug fix in the carddav (webdav) headders.
 	When querying against owncloud (sabredav.org) we must specify the
 	depth in the headers and not saying breif is true.
