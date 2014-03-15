@@ -121,6 +121,10 @@ main(int argc, char **argv)
 		free(res);
 		res = NULL;
 	}
+	if (name) {
+		free(name);
+		name = NULL;
+	}
 
 	return(EXIT_SUCCESS);
 }

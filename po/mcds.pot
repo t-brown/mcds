@@ -6,9 +6,9 @@
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: mcds 0.4\n"
+"Project-Id-Version: mcds 0.5\n"
 "Report-Msgid-Bugs-To: <tbrown@freeshell.org>\n"
-"POT-Creation-Date: 2014-03-10 15:22-0600\n"
+"POT-Creation-Date: 2014-03-14 11:22-0600\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -28,6 +28,10 @@ msgstr ""
 #: src/carddav.c:100
 #, c-format
 msgid "Unable to search for %s: %s"
+msgstr ""
+
+#: src/carddav.c:108
+msgid "Unable to obtain a result."
 msgstr ""
 
 #: src/curl.c:55
@@ -121,19 +125,26 @@ msgstr ""
 msgid "Unable to close %s"
 msgstr ""
 
-#: src/vcard.c:78
+#: src/vcard.c:79
 msgid "Unable to build regex pattern."
 msgstr ""
 
-#: src/vcard.c:87 src/vcard.c:100
+#: src/vcard.c:88 src/vcard.c:101
 #, c-format
 msgid "Unable to compile regex '%s': %s\n"
 msgstr ""
 
-#: src/xml.c:63
+#: src/xml.c:64
 msgid "Unable to generate an xml document"
 msgstr ""
 
-#: src/xml.c:69
+#: src/xml.c:70
 msgid "Unable to get the root node of the xml document"
+msgstr ""
+
+#: src/xml.c:107
+#, c-format
+msgid ""
+"Data:\n"
+"%s\n"
 msgstr ""

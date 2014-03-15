@@ -45,6 +45,8 @@
 #endif
 
 /**
+ * Read the rc file and parse it into the options.
+ *
  * \retval 0 If there were no errors.
  * \retval 1 If an error was encounted.
  **/
@@ -70,7 +72,9 @@ read_rc(void)
 		return(EXIT_FAILURE);
 	}
 
-	if (asprintf(&abs_file, "%s/%s", home, file) == -1) {
+	len = strlen(home) + strlen(file) + 2;
+	abs_file = xmalloc(len*sizeof(char));
+	if (snprintf(abs_file, len, "%s/%s", home, file) >= len) {
 		warnx(_("Unable to build rc file string"));
 		return(EXIT_FAILURE);
 	}
@@ -118,10 +122,23 @@ read_rc(void)
 				options.netrc = 0;
 			}
 		}
+		if (vals[0]) {
+			free(vals[0]);
+			vals[0] = NULL;
+		}
+		if (vals[1]) {
+			free(vals[1]);
+			vals[1] = NULL;
+		}
 	}
 
 	if (fclose(ifd)) {
 		warn(_("Unable to close %s"), abs_file);
+	}
+
+	if (abs_file) {
+		free(abs_file);
+		abs_file = NULL;
 	}
 	return(EXIT_SUCCESS);
 }

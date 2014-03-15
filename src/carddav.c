@@ -68,6 +68,7 @@ int
 query(CURL *hdl, const char *name, char **result)
 {
 
+	size_t len = 0;
 	char *s = NULL;
 	CURLcode res = CURLE_OK;
 	struct curl_slist *hdrs = NULL;
@@ -77,7 +78,10 @@ query(CURL *hdl, const char *name, char **result)
 		return(EXIT_FAILURE);
 	}
 
-	if (asprintf(&s, sterm, sterm_name[options.search], name) == -1) {
+	len = strlen(sterm) + strlen(sterm_name[options.search])
+		+ strlen(name) +1;
+	s = xmalloc(len*sizeof(char));
+	if (snprintf(s, len, sterm, sterm_name[options.search], name) >= len) {
 		warnx(_("Unable to build search string."));
 		return(EXIT_FAILURE);
 	}

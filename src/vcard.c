@@ -63,19 +63,22 @@ search(const char *card)
 
 	regex_t fnr;			/* Precompiled fn regex */
 	regmatch_t fnm[2];		/* Regex fn pattern match */
-	static const char fnp[] = "FN:(.*)";	/* Regex fn pattern */
+	const char fnp[] = "FN:(.*)";	/* Regex fn pattern */
 
 	regex_t flr;			/* Precompiled vcard regex */
 	regmatch_t flm[3];		/* Regex pattern match */
-	char *flp  = NULL;		/* Regex pattern */
+	const char fr[] = "^%s([A-Za-z;=])+:(.*)"; /* Regex pattern */
+	char *flp  = NULL;		/* Filled in regex pattern */
+	size_t fln = 0;			/* Size of initial field regex */
 
 	size_t len = 0;			/* Length of the name */
 	char *name = NULL;		/* Name field */
 	size_t flen = 0;		/* Length of the field */
 
 	/* Create the regex pattern for the field */
-	if (asprintf(&flp, "^%s([A-Za-z;=])+:(.*)",
-				sterm_name[options.search]) == -1) {
+	fln += strlen(fr) + strlen(sterm_name[options.search]) - 1;
+	flp = xmalloc((fln)*sizeof(char));
+	if (snprintf(flp, fln, fr, sterm_name[options.search]) >= fln) {
 		warnx(_("Unable to build regex pattern."));
 		return(EXIT_FAILURE);
 	}
@@ -144,12 +147,13 @@ rtn:
 		free(name);
 		name = NULL;
 	}
+	if (flp) {
+		free(flp);
+		flp = NULL;
+	}
 	regfree(&flr);
 	regfree(&fnr);
 	return(rerr);
-
-
-
 }
 
 /**
