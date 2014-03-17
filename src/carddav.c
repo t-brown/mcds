@@ -41,6 +41,12 @@
 #include "mem.h"
 #include "carddav.h"
 
+/** Curl response data structure **/
+struct r_data {
+	size_t size;
+	char * data;
+};
+
 /** Search callback fuction **/
 static size_t query_cb(void *, size_t, size_t, void *);
 
@@ -72,6 +78,7 @@ query(CURL *hdl, const char *name, char **result)
 	char *s = NULL;
 	CURLcode res = CURLE_OK;
 	struct curl_slist *hdrs = NULL;
+	struct r_data buffer;
 
 	if (*result != NULL) {
 		warnx(_("Will not to write results to non-null pointer."));
@@ -86,6 +93,10 @@ query(CURL *hdl, const char *name, char **result)
 		return(EXIT_FAILURE);
 	}
 
+	/* Response buffer, will be realloc'ed by the call back */
+	buffer.data = xmalloc(1);
+	buffer.size = 0;
+
 	if (options.verbose) {
 		fprintf(stderr, "  Sending    :\n%s\n", s);
 	}
@@ -97,7 +108,7 @@ query(CURL *hdl, const char *name, char **result)
 	curl_easy_setopt(hdl, CURLOPT_POSTFIELDS, s);
 	curl_easy_setopt(hdl, CURLOPT_HTTPHEADER, hdrs);
 	curl_easy_setopt(hdl, CURLOPT_WRITEFUNCTION, query_cb);
-	curl_easy_setopt(hdl, CURLOPT_WRITEDATA, result);
+	curl_easy_setopt(hdl, CURLOPT_WRITEDATA, (void *)&buffer);
 
 	res = curl_easy_perform(hdl);
 	if (res != CURLE_OK) {
@@ -108,10 +119,13 @@ query(CURL *hdl, const char *name, char **result)
 	/* Write out a blank line for mutt */
 	printf("\n");
 
-	if (*result == NULL) {
+	if (buffer.size == 0) {
 		warnx(_("Unable to obtain a result."));
 		return(EXIT_FAILURE);
 	}
+	*result = xmalloc(buffer.size+1);
+	memcpy(*result, buffer.data, buffer.size);
+	(*result)[buffer.size] = '\0';
 
 	if (options.verbose) {
 		fprintf(stderr, "Retrieved:\n======\n%s\n======\n", *result);
@@ -124,6 +138,12 @@ query(CURL *hdl, const char *name, char **result)
 		s = NULL;
 	}
 
+	if (buffer.data) {
+		free(buffer.data);
+		buffer.data = NULL;
+		buffer.size = 0;
+	}
+
 	return(EXIT_SUCCESS);
 }
 
@@ -131,6 +151,11 @@ query(CURL *hdl, const char *name, char **result)
 /**
  * Query's callback routine. That gets called when curl has
  * a response.
+ *
+ * Note curl normally writes out every 16k (as defined
+ * by CURL_MAX_WRITE_SIZE in curl.h). So if the response is
+ * larger than 16k, this callback will be called multiple
+ * times.
  *
  * \parm[in] contents The contents received by curl.
  * \parm[in] size     The size of a member returned.
@@ -144,13 +169,19 @@ static
 size_t
 query_cb(void *contents, size_t size, size_t nmemb, void *mem)
 {
-	char **res = (char **)mem;
 	size_t len = 0;
+	struct r_data *res = (struct r_data *)mem;
 
 	len = size * nmemb;
-	*res = xmalloc(len+1);
-	memcpy(*res, contents, len);
-	(*res)[len] = '\0';
+	res->data = realloc(res->data, res->size + len + 1);
+	if (res->data == NULL) {
+		warn(_("Unable to extend the response data buffer"));
+		return(0);
+	}
+
+	memcpy(&(res->data[res->size]), contents, len);
+	res->size += len;
+	res->data[res->size] = '\0';
 
 	return(len);
 

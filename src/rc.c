@@ -57,7 +57,7 @@ read_rc(void)
 	int i  = 0;                    /* Temporary loop indexer */
 	int ln = 0;                    /* Line number */
 	int len = 0;                   /* String length */
-	const char file[] = ".mcdsrc"; /* Rc file name */
+	static const char file[] = ".mcdsrc"; /* Rc file name */
 	char *home = NULL;             /* Home directory */
 	char *abs_file = NULL;         /* Absolute filename */
 	FILE *ifd = NULL;              /* File descriptor */

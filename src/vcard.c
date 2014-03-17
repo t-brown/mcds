@@ -63,11 +63,11 @@ search(const char *card)
 
 	regex_t fnr;			/* Precompiled fn regex */
 	regmatch_t fnm[2];		/* Regex fn pattern match */
-	const char fnp[] = "FN:(.*)";	/* Regex fn pattern */
+	static const char fnp[] = "FN:(.*)";	/* Regex fn pattern */
 
 	regex_t flr;			/* Precompiled vcard regex */
 	regmatch_t flm[3];		/* Regex pattern match */
-	const char fr[] = "^%s([A-Za-z;=])+:(.*)"; /* Regex pattern */
+	static const char fr[] = "^%s([A-Za-z;=])+:(.*)"; /* Regex pattern */
 	char *flp  = NULL;		/* Filled in regex pattern */
 	size_t fln = 0;			/* Size of initial field regex */
 

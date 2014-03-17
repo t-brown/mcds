@@ -92,7 +92,7 @@ parse(const char *res)
 static void
 walk_tree(xmlDocPtr doc, xmlNode *node)
 {
-	const xmlChar adr[] = "address-data";
+	static const xmlChar adr[] = "address-data";
 	xmlChar *data = NULL;
 	xmlNode *cur = NULL;
 
