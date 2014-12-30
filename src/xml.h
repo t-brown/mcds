@@ -33,7 +33,7 @@ extern "C"
 #endif
 
 /** Parse the query result */
-int parse(const char *);
+int parse_xml(const char *);
 
 #ifdef __cplusplus
 }                               /* extern "C" */

@@ -33,6 +33,7 @@ extern "C"
 #endif
 
 #define STERMS_TABLE            \
+	X(name,        "FN")    \
 	X(email,       "EMAIL") \
 	X(address,     "ADR")   \
 	X(telephone,   "TEL")
@@ -48,8 +49,10 @@ struct opts {
 	int verbose;
 	int verify;
 	int netrc;
+	enum s_terms query;
 	enum s_terms search;
 	char *url;
+	char *term;
 };
 
 /** Extern declarations **/

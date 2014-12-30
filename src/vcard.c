@@ -56,39 +56,44 @@
 int
 search(const char *card)
 {
+	/* Regex patterns */
+	static const char r[] = "^%s([A-Za-z;=])*:(.*)";     /* Whole result */
+	static const char t[] = "^%s([A-Za-z;=])*:(.*%s.*)"; /* Query term  */
+
+	int plen = 0;			/* Length of snprintf()'s */
 
 	int rerr = 0;			/* Regex error code */
 	size_t rlen = 0;		/* Regex error string length */
 	char *rstr = NULL;		/* Regex error string */
 
-	regex_t fnr;			/* Precompiled fn regex */
-	regmatch_t fnm[2];		/* Regex fn pattern match */
-	static const char fnp[] = "FN:(.*)";	/* Regex fn pattern */
+	size_t qlen = 0;		/* Length of the query string */
+	char *q = NULL;			/* Regex pattern for query */
+	regex_t rq = {0};		/* Regex precompiled query */
+	char *qres = NULL;		/* Result of the query */
 
-	regex_t flr;			/* Precompiled vcard regex */
-	regmatch_t flm[3];		/* Regex pattern match */
-	static const char fr[] = "^%s([A-Za-z;=])+:(.*)"; /* Regex pattern */
-	char *flp  = NULL;		/* Filled in regex pattern */
-	size_t fln = 0;			/* Size of initial field regex */
+	size_t slen = 0;		/* Length of the search string */
+	char *s = NULL;			/* Regex pattern for search */
+	regex_t rs = {0};		/* Regex precompiled search */
 
-	size_t len = 0;			/* Length of the name */
-	char *name = NULL;		/* Name field */
-	size_t flen = 0;		/* Length of the field */
+	regmatch_t match[3] = {0};	/* Regex matches */
 
-	/* Create the regex pattern for the field */
-	fln += strlen(fr) + strlen(sterm_name[options.search]) - 1;
-	flp = xmalloc((fln)*sizeof(char));
-	if (snprintf(flp, fln, fr, sterm_name[options.search]) >= fln) {
+	/* Compile the regex for the query */
+	qlen = strlen(t) -4
+		+ strlen(sterm_name[options.query])
+		+ strlen(options.term) +1;
+	q = xmalloc(qlen*sizeof(char));
+
+	plen = snprintf(q, qlen, t, sterm_name[options.query], options.term);
+	if (plen < 0 || (size_t)plen != qlen -1) {
 		warnx(_("Unable to build regex pattern."));
 		return(EXIT_FAILURE);
 	}
 
-	/* Compile the regex pattern for the field */
-	if ((rerr = regcomp(&flr, flp, REG_EXTENDED|REG_NEWLINE)) != 0) {
-		rlen = regerror(rerr, &flr, NULL, 0);
+	if ((rerr = regcomp(&rq, q, REG_EXTENDED|REG_NEWLINE)) != 0) {
+		rlen = regerror(rerr, &rq, NULL, 0);
 		rstr = xmalloc((rlen+1)*sizeof(char));
-		regerror(rerr, &flr, rstr, rlen);
-		warnx(_("Unable to compile regex '%s': %s\n"), flp, rstr);
+		regerror(rerr, &rq, rstr, rlen);
+		warnx(_("Unable to compile regex '%s': %s\n"), q, rstr);
 		if (rstr) {
 			free(rstr);
 			rstr = NULL;
@@ -96,12 +101,22 @@ search(const char *card)
 		return(EXIT_FAILURE);
 	}
 
-	/* Compile the regex pattern for the full name */
-	if ((rerr = regcomp(&fnr, fnp, REG_EXTENDED|REG_NEWLINE)) != 0) {
-		rlen = regerror(rerr, &fnr, NULL, 0);
+	/* Compile the regex for the search */
+	slen = strlen(r) -2
+		+ strlen(sterm_name[options.search]) +1;
+	s = xmalloc((slen)*sizeof(char));
+
+	plen = snprintf(s, slen, r, sterm_name[options.search]);
+	if (plen < 0 || (size_t)plen != slen -1) {
+		warnx(_("Unable to build regex pattern."));
+		return(EXIT_FAILURE);
+	}
+
+	if ((rerr = regcomp(&rs, s, REG_EXTENDED|REG_NEWLINE)) != 0) {
+		rlen = regerror(rerr, &rs, NULL, 0);
 		rstr = xmalloc((rlen+1)*sizeof(char));
-		regerror(rerr, &fnr, rstr, rlen);
-		warnx(_("Unable to compile regex '%s': %s\n"), fnp, rstr);
+		regerror(rerr, &rs, rstr, rlen);
+		warnx(_("Unable to compile regex '%s': %s\n"), s, rstr);
 		if (rstr) {
 			free(rstr);
 			rstr = NULL;
@@ -109,50 +124,46 @@ search(const char *card)
 		return(EXIT_FAILURE);
 	}
 
-	/* Find the name */
-	rerr = regexec(&fnr, &card[0], 2, fnm, 0);
+	if (options.verbose) {
+		fprintf(stderr, "Regex for query term: %s\n", q);
+		fprintf(stderr, "Regex for search term: %s\n", s);
+	}
+
+	/* Look for the query term in the original card */
+	rerr = regexec(&rq, &card[0], 3, match, 0);
 	if (rerr != 0) {
 		goto rtn;
 	}
 
-	len = (int)(fnm[1].rm_eo - fnm[1].rm_so);
-	name = xmalloc(len+1);
-	memcpy(name, card+fnm[1].rm_so, len);
-	if (name[len-1] == '\r') {
-		name[len-1] = '\0';
+	qlen = (int)(match[2].rm_eo - match[2].rm_so);
+	qres = xmalloc(qlen+1);
+	memcpy(qres, card+match[2].rm_so, qlen);
+	if (qres[qlen-1] == '\r') {
+		qres[qlen-1] = '\0';
 	} else {
-		name[len] ='\0';
+		qres[qlen] ='\0';
 	}
 
-	/* Grab the field we wanted */
-	rerr = regexec(&flr, card, 3, flm, 0);
+	/* Grab all the fields that we wanted */
+	rerr = regexec(&rs, card, 3, match, 0);
 	while (rerr == 0) {
-		/* For addresses convert ";" to "\n" */
-		flen = flm[2].rm_eo - flm[2].rm_so;
-		if (card[flm[2].rm_eo -1] == '\r') {
-			flen -= 1;
+		/* TODO: For addresses convert ";" to "\n" */
+		slen = match[2].rm_eo - match[2].rm_so;
+		if (card[match[2].rm_eo -1] == '\r') {
+			slen -= 1;
 		}
-		printf("%.*s\t%s\n", (int)flen, card + flm[2].rm_so, name);
+		printf("%.*s\t%s\n", (int)slen, card + match[2].rm_so, qres);
 
-		card += flm[0].rm_eo;
-		rerr = regexec(&flr, card, 3, flm, REG_NOTBOL);
+		card += match[0].rm_eo;
+		rerr = regexec(&rs, card, 3, match, REG_NOTBOL);
 	}
 
 rtn:
-	if (rstr) {
-		free(rstr);
-		rstr = NULL;
+	if (qres) {
+		free(qres);
+		qres = NULL;
 	}
-	if (name) {
-		free(name);
-		name = NULL;
-	}
-	if (flp) {
-		free(flp);
-		flp = NULL;
-	}
-	regfree(&flr);
-	regfree(&fnr);
+
 	return(rerr);
 }
 

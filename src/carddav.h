@@ -33,10 +33,7 @@ extern "C"
 #endif
 
 /* Query a carddav server */
-int query(CURL *, const char *, char **);
-
-/* Search a carddav response */
-int search(const char *);
+int query(CURL *, char **);
 
 #ifdef __cplusplus
 }                               /* extern "C" */

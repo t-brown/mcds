@@ -44,7 +44,7 @@
 /** Curl response data structure **/
 struct r_data {
 	size_t size;
-	char * data;
+	char *data;
 };
 
 /** Search callback fuction **/
@@ -52,43 +52,60 @@ static size_t query_cb(void *, size_t, size_t, void *);
 
 /** Search string **/
 static const char sterm[] =
-"<?xml version='1.0' encoding='utf-8' ?>"
-"<C:addressbook-query xmlns:D='DAV:' xmlns:C='urn:ietf:params:xml:ns:carddav'>"
-"<D:prop><C:address-data><C:prop name='FN'/><C:prop name='%s'/>"
-"</C:address-data></D:prop>"
-"<C:filter test='anyof'><C:prop-filter name='FN'>"
-"<C:text-match collation='i;unicode-casemap' match-type='contains'>%s"
-"</C:text-match></C:prop-filter></C:filter></C:addressbook-query>";
+"<?xml version='1.0' encoding='utf-8' ?>\n\
+<C:addressbook-query xmlns:D='DAV:'\n\
+                     xmlns:C='urn:ietf:params:xml:ns:carddav'>\n\
+  <D:prop>\n\
+    <D:getetag/>\n\
+    <C:address-data>\n\
+      <C:prop name='%s'/>\n\
+      <C:prop name='%s'/>\n\
+    </C:address-data>\n\
+  </D:prop>\n\
+  <C:filter test='anyof'>\n\
+    <C:prop-filter name='%s'>\n\
+      <C:text-match collation='i;unicode-casemap'\n\
+                    match-type='contains'>%s</C:text-match>\n\
+    </C:prop-filter>\n\
+  </C:filter>\n\
+</C:addressbook-query>";
 
 /**
  * Query for a name from the carddav server.
  *
  * \parm[in] hdl     Curl handle.
- * \parm[in] name    The name to search for.
  * \parm[out] result The results from the query.
  *
  * \retval 0 If there were no errors.
  * \retval 1 If an error was encounted.
  **/
 int
-query(CURL *hdl, const char *name, char **result)
+query(CURL *hdl, char **result)
 {
 
+	int plen = 0;
 	size_t len = 0;
 	char *s = NULL;
 	CURLcode res = CURLE_OK;
 	struct curl_slist *hdrs = NULL;
-	struct r_data buffer;
+	struct r_data buffer = {0};
 
 	if (*result != NULL) {
 		warnx(_("Will not to write results to non-null pointer."));
 		return(EXIT_FAILURE);
 	}
 
-	len = strlen(sterm) + strlen(sterm_name[options.search])
-		+ strlen(name) +1;
+	len = strlen(sterm) -8
+		+ strlen(sterm_name[options.search])
+		+ (2*strlen(sterm_name[options.query]))
+		+ strlen(options.term) + 1;
 	s = xmalloc(len*sizeof(char));
-	if (snprintf(s, len, sterm, sterm_name[options.search], name) >= len) {
+	plen = snprintf(s, len, sterm,
+		     sterm_name[options.search],
+		     sterm_name[options.query],
+		     sterm_name[options.query],
+		     options.term);
+	if (plen < 0 || (size_t)plen != len -1) {
 		warnx(_("Unable to build search string."));
 		return(EXIT_FAILURE);
 	}
@@ -101,7 +118,7 @@ query(CURL *hdl, const char *name, char **result)
 		fprintf(stderr, "  Sending    :\n%s\n", s);
 	}
 
-	hdrs = curl_slist_append(hdrs, "Content-Type: text/xml");
+	hdrs = curl_slist_append(hdrs, "Content-Type: text/xml; charset=utf-8");
 	hdrs = curl_slist_append(hdrs, "Depth: 1");
 
 	curl_easy_setopt(hdl, CURLOPT_CUSTOMREQUEST, "REPORT");
@@ -113,7 +130,7 @@ query(CURL *hdl, const char *name, char **result)
 	res = curl_easy_perform(hdl);
 	if (res != CURLE_OK) {
 		warnx(_("Unable to search for %s: %s"),
-				name, curl_easy_strerror(res));
+				options.term, curl_easy_strerror(res));
 		return(EXIT_FAILURE);
 	}
 	/* Write out a blank line for mutt */

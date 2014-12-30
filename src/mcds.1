@@ -28,11 +28,12 @@
 .Sh SYNOPSIS
 .Nm
 .Op Fl h
+.Op Fl q n|t|e
 .Op Fl s a|t|e
 .Op Fl u Ar URL
 .Op Fl V
 .Op Fl v
-.Ar name
+.Ar term
 .Sh DESCRIPTION
 The
 .Nm
@@ -44,8 +45,21 @@ The following options are available:
 .Bl -tag -width flag
 .It Fl h
 Display a short help message and exit.
+.It Fl q Ar n|t|e
+The term to query against. Known terms are:
+.Bl -enum -offset indent -compact
+.It
+.Em n
+Query for the full-name field. This is the default.
+.It
+.Em t
+Query for the telephone field.
+.It
+.Em e
+Query for the email field.
+.El
 .It Fl s Ar a|t|e
-The query term to return. Known terms are:
+The search term to return. Known terms are:
 .Bl -enum -offset indent -compact
 .It
 .Em a

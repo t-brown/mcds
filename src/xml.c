@@ -52,7 +52,7 @@ static void walk_tree(xmlDocPtr, xmlNode *);
  * \retval 1 If an error was encounted.
  **/
 int
-parse(const char *res)
+parse_xml(const char *res)
 {
 	size_t len      = 0;		/* Length of the result */
 	xmlDocPtr doc   = NULL;		/* XML document pointer */
