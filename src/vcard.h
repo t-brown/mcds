@@ -35,6 +35,9 @@ extern "C"
 /** Search the vcard */
 int search(const char *);
 
+/** Quote a string for regex's */
+int quote(const char *, char **);
+
 #ifdef __cplusplus
 }                               /* extern "C" */
 #endif

@@ -68,6 +68,7 @@ search(const char *card)
 
 	size_t qlen = 0;		/* Length of the query string */
 	char *q = NULL;			/* Regex pattern for query */
+	char *qt = NULL;		/* Quoted query term */
 	regex_t rq = {0};		/* Regex precompiled query */
 	char *qres = NULL;		/* Result of the query */
 
@@ -77,13 +78,19 @@ search(const char *card)
 
 	regmatch_t match[3] = {0};	/* Regex matches */
 
+	/* Generate a quoted query term */
+	if (quote(options.term, &qt)) {
+		warnx(_("Unable to build quoted term."));
+		return(EXIT_FAILURE);
+	}
+
 	/* Compile the regex for the query */
 	qlen = strlen(t) -4
 		+ strlen(sterm_name[options.query])
-		+ strlen(options.term) +1;
+		+ strlen(qt) +1;
 	q = xmalloc(qlen*sizeof(char));
 
-	plen = snprintf(q, qlen, t, sterm_name[options.query], options.term);
+	plen = snprintf(q, qlen, t, sterm_name[options.query], qt);
 	if (plen < 0 || (size_t)plen != qlen -1) {
 		warnx(_("Unable to build regex pattern."));
 		return(EXIT_FAILURE);
@@ -158,15 +165,77 @@ search(const char *card)
 		rerr = regexec(&rs, card, 3, match, REG_NOTBOL);
 	}
 
+	regfree(&rq);
+	regfree(&rs);
+
 rtn:
 	if (qres) {
 		free(qres);
 		qres = NULL;
 	}
+	if (qt) {
+		free(qt);
+		qt = NULL;
+	}
 
 	return(rerr);
 }
 
+/**
+ * Generate a quoted string for regex's.
+ *
+ * \param[in]  term   The search term unquoted.
+ * \param[out] quoted The search term quoted for regex.
+ *
+ * \retval 0 If there were no errors.
+ **/
+int
+quote(const char *term, char **quoted)
+{
+	int i = 0;
+	int j = 0;
+	int len = 0;
+
+	len = strlen(term);
+	j = len;
+
+	/* find out how many extra characters we might need */
+	for (i = 0; i < len; ++i) {
+		switch (term[i]) {
+			case '(':
+			case ')':
+			case '+':
+			case '-':
+			case '.':
+			case ' ':
+				++j;
+				break;
+		}
+	}
+
+	/* create the quoted string */
+	(*quoted) = xmalloc((j+1) * sizeof(char));
+	j = 0;
+	for (i = 0; i < len; ++i) {
+		switch (term[i]) {
+			case '(':
+			case ')':
+			case '+':
+			case '-':
+			case '.':
+			case ' ':
+				(*quoted)[j] = '\x5c';
+				(*quoted)[++j] = term[i];
+				break;
+			default:
+				(*quoted)[j] = term[i];
+				break;
+		}
+		++j;
+	}
+
+	return(EXIT_SUCCESS);
+}
 /**
  * \}
  **/
