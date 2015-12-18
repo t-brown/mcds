@@ -19,7 +19,7 @@
 
 /**
  * \file main.c
- * Main entry point for the program.
+ * Main entry point for the program MCDS.
  *
  * \ingroup main
  * \{
