@@ -57,7 +57,7 @@ int
 search(const char *card)
 {
 	/* Regex patterns */
-	static const char r[] = "^%s([A-Za-z;=])*:(.*)";     /* Whole result */
+	static const char r[] = "%s([A-Za-z;=])*:(.*)";     /* Whole result */
 	static const char t[] = "^%s([A-Za-z;=])*:(.*%s.*)"; /* Query term  */
 
 	int plen = 0;			/* Length of snprintf()'s */
@@ -96,7 +96,7 @@ search(const char *card)
 		return(EXIT_FAILURE);
 	}
 
-	if ((rerr = regcomp(&rq, q, REG_EXTENDED|REG_NEWLINE)) != 0) {
+	if ((rerr = regcomp(&rq, q, REG_EXTENDED|REG_NEWLINE|REG_ICASE)) != 0) {
 		rlen = regerror(rerr, &rq, NULL, 0);
 		rstr = xmalloc((rlen+1)*sizeof(char));
 		regerror(rerr, &rq, rstr, rlen);

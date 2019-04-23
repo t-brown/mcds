@@ -61,3 +61,10 @@ The typical URL to query for Davical ( http://www.davical.org/ ) is
 ------------
 The typical URL to query for Ownclod ( http://owncloud.org// ) is
   http://demo.owncloud.org/remote.php/carddav/addressbooks/username/contacts
+
+3.3 Gmail
+---------
+The typical URL to query for Gmail ( https://gmail.com// ) is
+  https://www.googleapis.com/carddav/v1/principals/username@example.com/lists/default
+where one needs to subsitute your email address for username@example.com.
+
