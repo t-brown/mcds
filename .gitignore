@@ -1,2 +1,12 @@
 /autom4te.cache
-
+config.log
+config.status
+configure
+po/POTFILES
+po/remove-potcdate.sed
+Makefile
+Makefile.in
+src/.deps/
+src/config.h
+src/stamp-h1
+VERSION
