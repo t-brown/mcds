@@ -1,3 +1,8 @@
+2019-04-25  Timothy Brown  <tbrown@freeshell.org>
+
+	Added the ability to do case insensitive searches and
+	to parse the response from Gmail.
+
 2014-03-14  Timothy Brown  <tbrown@freeshell.org>
 
 	Adding more debug info and correcting for \r's.
