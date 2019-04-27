@@ -3,7 +3,7 @@
 #
 
 AC_PREREQ(2.61)
-AC_INIT([mcds], [0.8], [tbrown@freeshell.org])
+AC_INIT([mcds], [0.9], [tbrown@freeshell.org])
 AC_CONFIG_AUX_DIR([build-aux])
 
 # Create the VERSION file, which contains the package version
@@ -11,7 +11,7 @@ echo AC_PACKAGE_VERSION>VERSION
 AC_SUBST(PACKAGE_VERSION)
 
 # Internationalization
-AM_GNU_GETTEXT_VERSION([0.18.1])
+AM_GNU_GETTEXT_VERSION([0.19])
 AM_GNU_GETTEXT([external])
 
 # Initialise automake
