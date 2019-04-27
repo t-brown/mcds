@@ -21,119 +21,127 @@
 .\" $Id$
 .\"
 .Dd March 4, 2014
-.Dt mcds 1 LOCAL
+.Dt MCDS 1
+.Os
 .Sh NAME
 .Nm mcds
-.Nd mutt carddav query
+.Nd mutt CardDAV query
 .Sh SYNOPSIS
 .Nm
-.Op Fl h
-.Op Fl q n|t|e
-.Op Fl s a|t|e
+.Op Fl hVv
+.Op Fl q Cm a | e | n | t
+.Op Fl s Cm a | e | n | t
 .Op Fl u Ar URL
-.Op Fl V
-.Op Fl v
 .Ar term
 .Sh DESCRIPTION
 The
 .Nm
-utility queries a carddav server for the requested information. It's
-primary function is to provide a query command for mutt against a
-carddav server.
+utility queries a CardDAV server for requested information.
+It's primary function is to provide an address query command for
+.Xr mutt 1 .
 .Pp
-The following options are available:
-.Bl -tag -width flag
+The options are as follows:
+.Bl -tag -width Ds
 .It Fl h
-Display a short help message and exit.
-.It Fl q Ar n|t|e
-The term to query against. Known terms are:
-.Bl -enum -offset indent -compact
-.It
-.Em n
-Query for the full-name field. This is the default.
-.It
-.Em t
-Query for the telephone field.
-.It
-.Em e
-Query for the email field.
-.El
-.It Fl s Ar a|t|e
-The search term to return. Known terms are:
-.Bl -enum -offset indent -compact
-.It
-.Em a
+Print help text to standard output and exit.
+.It Fl q Cm a | e | n | t
+The term to query against.
+Known terms are:
+.Bl -tag -width Ds
+.It Cm a
 Query for the address field.
-.It
-.Em t
+.It Cm e
+Query for the email field.
+This is the default.
+.It Cm n
+Query for the full-name field.
+.It Cm t
 Query for the telephone field.
-.It
-.Em e
-Query for the email field. This is the default.
+.El
+.It Fl s Cm a | e | n | t
+The search term to return.
+Known terms are:
+.Bl -tag -width Ds
+.It Cm a
+Query for the address field.
+.It Cm e
+Query for the email field.
+This is the default.
+.It Cm n
+Query for the full-name field.
+.It Cm t
+Query for the telephone field.
 .El
 .It Fl u Ar URL
-The carddav URL.
+The URL of the CardDAV server.
 .It Fl V
-Display the version number and exit.
+Print the version number and license information of
+.Nm
+to standard output and exit.
 .It Fl v
-Verbose mode. Causes
+Enable verbose mode.
+Forces
 .Nm
 to print debugging messages about its progress.
 .El
+.Sh FILES
+.Bl -tag -width Ds
+.It Pa ~/.mcdsrc
+Configuration file.
+Used to set default values for
+.Nm ,
+but can be overridden with command-line arguments.
+Formatted as a list of
+.Dq Cm key No \&= Ar value
+pairs separated by newlines.
 .Pp
-By default if you are connecting over SSL
-.Nm
-will not verify the certificates and will use Basic Authentication
-using the username and password provided in your
+The keys are as follows:
+.Bl -tag -width Ds
+.It Cm url No \&= Ar URL
+The URL of the CardDAV server.
+.It Cm verify No \&= Op Cm yes | no
+Verify server certificate if connecting over HTTPS.
+Disabled by default.
+.It Cm netrc No \&= Op Cm yes | no
+Enable reading the
 .Pa ~/.netrc
 file.
-.Pp
-The configuration file
-.Pa ~/.mcdsrc
-will be read if it exists, however command line arguments will override
-any values in the configuration file. The configuration file is of the
-key, value pairs form on a line separated by an equals sign. The only
-known keys are
-.Ad url , verify , netrc .
-An example
-.Pa ~/.mcdsrc
-is provided in the
-.Sx EXAMPLES
-section.
+Enabled by default.
+.El
+.It Pa ~/.netrc
+Used to access your username and password when authenticating with the
+CardDAV server.
+.El
 .Sh EXIT STATUS
 .Ex -std
 .Sh EXAMPLES
-To query a DAViCal carddav server at the URL
-https://localhost/caldav.php/username/addressbook/
-for the email addresses corresponding to Ben:
-.Dl mcds -u https://localhost/caldav.php/username/addressbook/ Ben
-Which could return a list of people and email addresses as
-.Pp
+Query a CardDAV server for email addresses corresponding to
+.Dq Ben :
 .Bd -literal -offset indent
+$ mcds -u https://localhost/caldav.php/username/addressbook/ Ben
 ben@example.net        Ben Smith
+\&...
 .Ed
 .Pp
-One can therefore use
+To use
 .Nm
-as a
-.Nm mutt
-query program by specifying the following in your
-.Pa ~/.muttrc
-file.
+with
+.Nm mutt ,
+add the following to your
+.Xr muttrc 5 :
 .Bd -literal -offset indent
 set query_command="mcds -u https://localhost/caldav.php/username/addressbook/ '%s'"
 .Ed
 .Pp
-To make this query more succinct one can specify in
-.Pa ~/.mcdsrc
-the following:
+This query can be simplified by putting the relevant values in
+.Pa ~/.mcdsrc :
 .Bd -literal -offset indent
 url = https://localhost/caldav.php/username/addressbook/
 verify = no
 netrc = yes
 .Ed
 .Pp
-So making the mutt query command simply
+Now the query command can be shortened to:
 .Bd -literal -offset indent
 set query_command="mcds '%s'"
 .Ed
@@ -141,14 +149,9 @@ set query_command="mcds '%s'"
 .Xr curl 1 ,
 .Xr mutt 1 ,
 .Xr muttrc 5 ,
-.Xr netrc 5 .
-.Sh STANDARDS
+.Xr netrc 5
+.Sh AUTHORS
 The
 .Nm
-command is expected to be
-.St -p1003.2
-compatible.
-.Sh AUTHOR
-Written by Timothy Brown.
-.Sh REPORTING BUGS
-Report bugs to <tbrown@freeshell.org>
+utility is maintained by
+.An Timothy Brown Aq Mt tbrown@freeshell.org
