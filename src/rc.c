@@ -33,10 +33,15 @@
 #include <stdlib.h>
 #include <string.h>
 #include <err.h>
+#include <errno.h>
 #include <locale.h>
 #include <unistd.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <fcntl.h>
 #include "gettext.h"
 #include "defs.h"
+#include "decrypt.h"
 #include "options.h"
 #include "mem.h"
 
@@ -63,8 +68,10 @@ read_rc(void)
 	FILE *ifd = NULL;              /* File descriptor */
 	char line[LINE_MAX];           /* Read line from file */
 	char *lptr = NULL;             /* Line pointer for strsep */
-	char *tmp  = NULL;            /* Temporary pointer for read variables */
-	char *vals[2] = {0};           /* key, value read from a line */
+	char *tmp  = NULL;             /* Temporary pointer for read variables*/
+	char *vals[2] = {0};           /* Key, value read from a line */
+	char *pfile = NULL;            /* Password file */
+	struct stat buf = {0};         /* Stat information */
 
 	home = getenv("HOME");
 	if (home == NULL) {
@@ -79,7 +86,13 @@ read_rc(void)
 		return(EXIT_FAILURE);
 	}
 
-	/* fail silently in case the user does not have an rc file */
+	/* fail silently in case the user does not have a rc file */
+	if (stat(abs_file, &buf) == -1) {
+		if (errno == ENOENT) {
+			return(EXIT_SUCCESS);
+		}
+	}
+
 	if ((ifd = fopen(abs_file, "r")) == NULL) {
 		return(EXIT_FAILURE);
 	}
@@ -121,6 +134,16 @@ read_rc(void)
 			} else {
 				options.netrc = 0;
 			}
+		} else if (strncmp("password_file", vals[0], 13) == 0) {
+			len = strlen(vals[1]);
+			pfile = xmalloc(len+1);
+			strncpy(pfile, vals[1], len);
+		} else if (strncmp("username", vals[0], 8) == 0) {
+			if (options.username == NULL) {
+				len = strlen(vals[1]);
+				options.username = xmalloc(len+1);
+				strncpy(options.username, vals[1], len);
+			}
 		}
 		if (vals[0]) {
 			free(vals[0]);
@@ -140,6 +163,34 @@ read_rc(void)
 		free(abs_file);
 		abs_file = NULL;
 	}
+
+	if (pfile) {
+#ifdef HAVE_GPGME
+		if (pfile[0] == '~' && pfile[1] == '/') {
+			len = strlen(home) + strlen(pfile);
+			abs_file = xmalloc(len*sizeof(char));
+			if (snprintf(abs_file, len, "%s/%s", home, pfile + 2) >= len) {
+				warnx(_("Unable to build password file string"));
+				return(EXIT_FAILURE);
+			}
+		} else {
+			abs_file = strdup(pfile);
+		}
+		free(pfile);
+		pfile = NULL;
+
+		if (decrypt(abs_file)) {
+			return(EXIT_FAILURE);
+		}
+#else
+		warnx(_("Encrypted password files are not supportred."));
+		return(EXIT_FAILURE);
+#endif
+
+		free(abs_file);
+		abs_file = NULL;
+	}
+
 	return(EXIT_SUCCESS);
 }
 

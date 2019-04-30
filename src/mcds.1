@@ -94,7 +94,21 @@ will be read if it exists, however command line arguments will override
 any values in the configuration file. The configuration file is of the
 key, value pairs form on a line separated by an equals sign. The only
 known keys are
-.Ad url , verify , netrc .
+.Ad url , verify , netrc, username, password_file .
+.Pp
+If a
+.Ad username
+and
+.Ad password_file
+are specified in the configuration file
+.Nm
+will use these and not the
+.Pa ~/.netrc
+file. The
+.Ad password_file
+has to be GPG encrypted and
+.Nm
+has to be built with GPGME support enabled.
 An example
 .Pa ~/.mcdsrc
 is provided in the
@@ -137,8 +151,23 @@ So making the mutt query command simply
 .Bd -literal -offset indent
 set query_command="mcds '%s'"
 .Ed
+.Pp
+An example using
+.Ad username, password_file
+in
+.Pa ~/.mcdsrc
+is:
+.Bd -literal -offset indent
+url = https://www.googleapis.com/carddav/v1/principals/tbrown@example.com/lists/default
+verify = no
+netrc = no
+username = tbrown
+password_file = ~/.gmail.gpg
+.Ed
+Where one has encrypted a gmail application token using OpenGPG.
 .Sh SEE ALSO
 .Xr curl 1 ,
+.Xr gpg2 1,
 .Xr mutt 1 ,
 .Xr muttrc 5 ,
 .Xr netrc 5 .
