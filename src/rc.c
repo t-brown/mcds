@@ -79,6 +79,25 @@ read_rc(void)
 		return(EXIT_FAILURE);
 	}
 
+#ifdef HAVE_UNVEIL
+	if (unveil(home, "r") == -1) {
+		warn(_("Unable to unveil %s"), home);
+		return(EXIT_FAILURE);
+	}
+	if (unveil("/etc/ssl", "r") == -1) {
+		warn(_("Unable to unveil /etc/ssl/"));
+		return(EXIT_FAILURE);
+	}
+	if (unveil("/usr/local/bin", "rx") == -1) {
+		warn(_("Unable to unveil /usr/local/bin"));
+		return(EXIT_FAILURE);
+	}
+	if (unveil(NULL, NULL) == -1) {
+		warn(_("Unable to disable further unveil"));
+		return(EXIT_FAILURE);
+	}
+#endif
+
 	len = strlen(home) + strlen(file) + 2;
 	abs_file = xmalloc(len*sizeof(char));
 	if (snprintf(abs_file, len, "%s/%s", home, file) >= len) {

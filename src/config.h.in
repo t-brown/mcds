@@ -41,6 +41,9 @@
 /* Define to 1 if you have the `memset' function. */
 #undef HAVE_MEMSET
 
+/* Define to 1 if you have the `pledge' function. */
+#undef HAVE_PLEDGE
+
 /* Define to 1 if you have the `program_invocation_short_name' function. */
 #undef HAVE_PROGRAM_INVOCATION_SHORT_NAME
 
@@ -64,6 +67,9 @@
 
 /* Define to 1 if you have the <unistd.h> header file. */
 #undef HAVE_UNISTD_H
+
+/* Define to 1 if you have the `unveil' function. */
+#undef HAVE_UNVEIL
 
 /* Name of package */
 #undef PACKAGE

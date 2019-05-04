@@ -35,7 +35,10 @@ AC_HEADER_STDC
 AC_CHECK_HEADERS([stdlib.h string.h unistd.h])
 
 # Checks for functions and libraries
-AC_CHECK_FUNCS([memset getprogname program_invocation_short_name])
+AC_CHECK_FUNCS([getprogname \
+		memset \
+		pledge program_invocation_short_name \
+		unveil])
 AC_FUNC_MALLOC
 
 # Shouldn't need this on newer automakes
