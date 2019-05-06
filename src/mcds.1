@@ -107,10 +107,16 @@ Enable reading the
 .Pa ~/.netrc
 file.
 Enabled by default.
+.It Cm username No \&= Ar USERNAME
+The username to login to the CardDAV server with.
+.It Cm password_file No \&= Ar password.gpg
+The GPG encrypted file containg the password for the CardDAV server.
 .El
 .It Pa ~/.netrc
 Used to access your username and password when authenticating with the
-CardDAV server.
+CardDAV server, if you have not specified your username and password
+file in
+.Pa ~/.mcdsrc .
 .El
 .Sh EXIT STATUS
 .Ex -std

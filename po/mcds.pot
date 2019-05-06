@@ -1,14 +1,14 @@
 # SOME DESCRIPTIVE TITLE.
 # Copyright (C) YEAR Free Software Foundation, Inc.
-# This file is distributed under the same license as the PACKAGE package.
+# This file is distributed under the same license as the mcds package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: mcds 0.5\n"
+"Project-Id-Version: mcds 1.0\n"
 "Report-Msgid-Bugs-To: <tbrown@freeshell.org>\n"
-"POT-Creation-Date: 2014-03-14 11:22-0600\n"
+"POT-Creation-Date: 2019-05-06 11:01-0600\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,21 +17,25 @@ msgstr ""
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: src/carddav.c:76
+#: src/carddav.c:94
 msgid "Will not to write results to non-null pointer."
 msgstr ""
 
-#: src/carddav.c:81
+#: src/carddav.c:109
 msgid "Unable to build search string."
 msgstr ""
 
-#: src/carddav.c:100
+#: src/carddav.c:132
 #, c-format
 msgid "Unable to search for %s: %s"
 msgstr ""
 
-#: src/carddav.c:108
+#: src/carddav.c:140
 msgid "Unable to obtain a result."
+msgstr ""
+
+#: src/carddav.c:195
+msgid "Unable to extend the response data buffer"
 msgstr ""
 
 #: src/curl.c:55
@@ -54,42 +58,56 @@ msgstr ""
 msgid "Unable to set curls SSL verification."
 msgstr ""
 
-#: src/curl.c:79
+#: src/curl.c:80
+msgid "Unable to set curls username option."
+msgstr ""
+
+#: src/curl.c:84
+msgid "Unable to set curls password option."
+msgstr ""
+
+#: src/curl.c:90
 msgid "Unable to set curls .netrc option."
 msgstr ""
 
-#: src/curl.c:83
+#: src/curl.c:95
 msgid "Unable to set curls HTTP auth method."
 msgstr ""
 
-#: src/curl.c:103
+#: src/curl.c:115
 msgid "Unable to finalise null curl handle."
 msgstr ""
 
-#: src/main.c:195
-msgid "Must specify a name to search for."
+#: src/main.c:227
+msgid "Must specify a term to query for."
 msgstr ""
 
-#: src/main.c:222
+#: src/main.c:258
 #, c-format
 msgid ""
-"usage: %s [-h] [-V] [-v] [-s a|t|e] [-u URL] name\n"
+"usage: %s [-h] [-V] [-v] [-q n|t|e] [-s n|a|t|e] [-u URL] string\n"
 "  -h, --help         Display this help and exit.\n"
 "  -V, --version      Display version information and exit.\n"
 "  -v, --verbose      Verbose mode.\n"
-"  -s, --search a|t|e Search term. Known terms are:\n"
+"  -q, --query  n|t|e Query term (default name). Known terms are:\n"
+"                     n = name\n"
+"                     t = telephone\n"
+"                     e = email\n"
+"  -s, --search a|t|e Search term (default email). Known terms are:\n"
+"                     n = name\n"
 "                     a = address\n"
 "                     t = telephone\n"
 "                     e = email\n"
 "  -u, --url          The URL of the carddav server to query.\n"
+"  string             The query string to look for within the query term.\n"
 msgstr ""
 
-#: src/main.c:243
+#: src/main.c:285
 #, c-format
 msgid "%s (GNU %s) %s\n"
 msgstr ""
 
-#: src/main.c:244
+#: src/main.c:286
 #, c-format
 msgid ""
 "Copyright (C) %s Timothy Brown.\n"
@@ -100,10 +118,10 @@ msgid ""
 "\n"
 msgstr ""
 
-#: src/main.c:249
+#: src/main.c:291
 #, c-format
 msgid ""
-"Compiled on %s at %s.\n"
+"Compiled on %s at %s %s\n"
 "\n"
 msgstr ""
 
@@ -112,24 +130,53 @@ msgstr ""
 msgid "out of memory (unable to allocate %ld bytes)"
 msgstr ""
 
-#: src/rc.c:69
+#: src/rc.c:78
 msgid "Unable to obtain home directory"
 msgstr ""
 
-#: src/rc.c:74
+#: src/rc.c:84
+#, c-format
+msgid "Unable to unveil %s"
+msgstr ""
+
+#: src/rc.c:88
+msgid "Unable to unveil /etc/ssl/"
+msgstr ""
+
+#: src/rc.c:92
+msgid "Unable to unveil /usr/local/bin"
+msgstr ""
+
+#: src/rc.c:96
+msgid "Unable to disable further unveil"
+msgstr ""
+
+#: src/rc.c:104
 msgid "Unable to build rc file string"
 msgstr ""
 
-#: src/rc.c:124
+#: src/rc.c:178
 #, c-format
 msgid "Unable to close %s"
 msgstr ""
 
-#: src/vcard.c:79
+#: src/rc.c:192
+msgid "Unable to build password file string"
+msgstr ""
+
+#: src/rc.c:205
+msgid "Encrypted password files are not supportred."
+msgstr ""
+
+#: src/vcard.c:83
+msgid "Unable to build quoted term."
+msgstr ""
+
+#: src/vcard.c:95 src/vcard.c:118
 msgid "Unable to build regex pattern."
 msgstr ""
 
-#: src/vcard.c:88 src/vcard.c:101
+#: src/vcard.c:103 src/vcard.c:126
 #, c-format
 msgid "Unable to compile regex '%s': %s\n"
 msgstr ""
