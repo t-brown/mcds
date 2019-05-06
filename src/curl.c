@@ -75,9 +75,21 @@ cinit(CURL **hdl)
 		warnx(_("Unable to set curls SSL verification."));
 		return(EXIT_FAILURE);
 	}
-	if (curl_easy_setopt(*hdl, CURLOPT_NETRC, options.netrc)) {
-		warnx(_("Unable to set curls .netrc option."));
-		return(EXIT_FAILURE);
+	if (options.username) {
+		if (curl_easy_setopt(*hdl, CURLOPT_USERNAME, options.username)) {
+			warnx(_("Unable to set curls username option."));
+			return(EXIT_FAILURE);
+		}
+		if (curl_easy_setopt(*hdl, CURLOPT_PASSWORD, options.password)) {
+			warnx(_("Unable to set curls password option."));
+			return(EXIT_FAILURE);
+		}
+
+	} else {
+		if (curl_easy_setopt(*hdl, CURLOPT_NETRC, options.netrc)) {
+			warnx(_("Unable to set curls .netrc option."));
+			return(EXIT_FAILURE);
+		}
 	}
 	if (curl_easy_setopt(*hdl, CURLOPT_HTTPAUTH, CURLAUTH_ANY)) {
 		warnx(_("Unable to set curls HTTP auth method."));

@@ -84,6 +84,12 @@ main(int argc, char **argv)
 	char *res = NULL;	/* query result */
 	CURL *hdl = NULL;	/* Curl handle */
 
+#ifdef HAVE_PLEDGE
+	if (pledge("dns exec inet proc stdio rpath unveil", NULL) == -1) {
+		err(1, "pledge");
+	}
+#endif
+
 #ifdef HAVE_SETLOCALE
 	setlocale(LC_ALL, "");
 #endif
@@ -92,7 +98,9 @@ main(int argc, char **argv)
 	textdomain(PACKAGE);
 #endif
 
-	read_rc();
+	if (read_rc()) {
+		return(EXIT_FAILURE);
+	}
 
 	if (parse_argv(argc, argv)) {
 		return(EXIT_FAILURE);
@@ -228,6 +236,8 @@ parse_argv(int argc, char **argv)
 		fprintf(stderr, "  URL        : %s\n", options.url);
 		fprintf(stderr, "  SSL Verify : %d\n", options.verify);
 		fprintf(stderr, "  Use .netrc : %d\n", options.netrc);
+		fprintf(stderr, "  Username   : %s\n", options.username);
+		fprintf(stderr, "  Password   : %s\n", options.password);
 		fprintf(stderr, "  Query term : %s\n", options.term);
 		fprintf(stderr, "  Query      : %s\n",
 				sterm_name[options.query]);
@@ -277,8 +287,14 @@ print_version(void)
 Copyright (C) %s Timothy Brown.\n\
 License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>\n\
 This is free software: you are free to change and redistribute it.\n\
-There is NO WARRANTY, to the extent permitted by law.\n\n"), "2014");
-	printf(_("Compiled on %s at %s.\n\n"), __DATE__, __TIME__);
+There is NO WARRANTY, to the extent permitted by law.\n\n"), "2019");
+	printf(_("Compiled on %s at %s %s\n\n"), __DATE__, __TIME__,
+#ifdef HAVE_GPGME
+	       "with GPGME support."
+#else
+	       "with-out GPGME support."
+#endif
+	       );
 	exit(EXIT_FAILURE);
 }
 

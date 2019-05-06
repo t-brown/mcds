@@ -3,7 +3,7 @@
 #
 
 AC_PREREQ(2.61)
-AC_INIT([mcds], [0.9], [tbrown@freeshell.org])
+AC_INIT([mcds], [1.0], [tbrown@freeshell.org])
 AC_CONFIG_AUX_DIR([build-aux])
 
 # Create the VERSION file, which contains the package version
@@ -35,7 +35,10 @@ AC_HEADER_STDC
 AC_CHECK_HEADERS([stdlib.h string.h unistd.h])
 
 # Checks for functions and libraries
-AC_CHECK_FUNCS([memset getprogname program_invocation_short_name])
+AC_CHECK_FUNCS([getprogname \
+		memset \
+		pledge program_invocation_short_name \
+		unveil])
 AC_FUNC_MALLOC
 
 # Shouldn't need this on newer automakes
@@ -49,6 +52,22 @@ AC_CONFIG_FILES([ Makefile
 PKG_CHECK_MODULES([CURL], [libcurl])
 PKG_CHECK_MODULES([XML], [libxml-2.0])
 
+dnl locate gpgme
+AC_ARG_ENABLE([gpgme],
+        AS_HELP_STRING([--disable-gpgme],[do not use GPGME support]))
+AS_IF([test x$enable_gpgme != xno],
+      [m4_ifdef([AM_PATH_GPGME],
+                [AM_PATH_GPGME([],
+                               [AC_DEFINE(HAVE_GPGME, 1, [GPGME support])
+                                AM_CONDITIONAL([WANT_GPGME], [test x = x])
+                               ],
+                               [AC_MSG_ERROR([GPGME not found])])
+                ],
+                [AC_MSG_ERROR([GPGME not found])])
+      ],
+      [AM_CONDITIONAL([WANT_GPGME], [test x = y])]
+)
+
 AC_OUTPUT
 echo
 echo
@@ -59,7 +78,7 @@ echo
 echo "Configuration Options Summary:"
 echo
 echo "Installation prefix        : $prefix"
-echo "C compiler                 : $ax_cv_c_compiler_vendor $CC"
+echo "C compiler                 : $ax_cv_c_compiler_vendor"
 echo "C command                  : $CC $CFLAGS"
 echo "Linker                     : $LD $LDFLAGS $LIBS"
 echo

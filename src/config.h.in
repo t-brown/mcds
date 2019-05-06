@@ -4,6 +4,14 @@
    language is requested. */
 #undef ENABLE_NLS
 
+/* Define to 1 if you have the Mac OS X function CFLocaleCopyCurrent in the
+   CoreFoundation framework. */
+#undef HAVE_CFLOCALECOPYCURRENT
+
+/* Define to 1 if you have the Mac OS X function CFPreferencesCopyAppValue in
+   the CoreFoundation framework. */
+#undef HAVE_CFPREFERENCESCOPYAPPVALUE
+
 /* Define if the GNU dcgettext() function is already present or preinstalled.
    */
 #undef HAVE_DCGETTEXT
@@ -13,6 +21,9 @@
 
 /* Define if the GNU gettext() function is already present or preinstalled. */
 #undef HAVE_GETTEXT
+
+/* GPGME support */
+#undef HAVE_GPGME
 
 /* Define if you have the iconv() function and it works. */
 #undef HAVE_ICONV
@@ -29,6 +40,9 @@
 
 /* Define to 1 if you have the `memset' function. */
 #undef HAVE_MEMSET
+
+/* Define to 1 if you have the `pledge' function. */
+#undef HAVE_PLEDGE
 
 /* Define to 1 if you have the `program_invocation_short_name' function. */
 #undef HAVE_PROGRAM_INVOCATION_SHORT_NAME
@@ -53,6 +67,9 @@
 
 /* Define to 1 if you have the <unistd.h> header file. */
 #undef HAVE_UNISTD_H
+
+/* Define to 1 if you have the `unveil' function. */
+#undef HAVE_UNVEIL
 
 /* Name of package */
 #undef PACKAGE
