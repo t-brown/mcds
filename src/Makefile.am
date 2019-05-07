@@ -8,10 +8,10 @@ mcds_CPPFLAGS = $(CURL_CFLAGS)                  \
                 $(XML_CFLAGS)                   \
                 $(GPGME_CFLAGS)
 
-mcds_LDFLAGS = $(LTLIBINTL)                     \
-               $(CURL_LIBS)                     \
-               $(XML_LIBS)                      \
-               $(GPGME_LIBS)
+mcds_LDADD = $(LTLIBINTL)                       \
+             $(CURL_LIBS)                       \
+             $(XML_LIBS)                        \
+             $(GPGME_LIBS)
 
 mcds_SOURCES = defs.h                           \
                options.h                        \

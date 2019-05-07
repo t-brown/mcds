@@ -3,11 +3,12 @@
 #
 
 AC_PREREQ(2.61)
-AC_INIT([mcds], [1.0], [tbrown@freeshell.org])
+AC_INIT([mcds], [1.1], [tbrown@freeshell.org])
 AC_CONFIG_AUX_DIR([build-aux])
 
-# Create the VERSION file, which contains the package version
-echo AC_PACKAGE_VERSION>VERSION
+# Define our M4 macro directory
+AC_CONFIG_MACRO_DIR([m4])
+
 AC_SUBST(PACKAGE_VERSION)
 
 # Internationalization
@@ -16,9 +17,6 @@ AM_GNU_GETTEXT([external])
 
 # Initialise automake
 AM_INIT_AUTOMAKE([foreign -Wall -Werror])
-
-# Define our M4 macro directory
-AC_CONFIG_MACRO_DIR([m4])
 
 # Check there is a source file
 AC_CONFIG_SRCDIR([src/main.c])
@@ -44,7 +42,7 @@ AC_FUNC_MALLOC
 # Shouldn't need this on newer automakes
 AM_PROG_CC_C_O
 
-AC_CONFIG_FILES([ Makefile
+AC_CONFIG_FILES([Makefile
 		 po/Makefile.in
 		 src/Makefile
                  ])
