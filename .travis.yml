@@ -1,0 +1,24 @@
+#======================================================================
+# Project settings
+#======================================================================
+
+branches:
+  only:
+      - master
+
+language: c
+
+compiler:
+  - gcc
+  - clang
+
+#======================================================================
+# Notifications
+#======================================================================
+notifications:
+  email:
+    recipients: tbrown@freeshell.org
+    on_success: change
+    on_failure: always
+
+
