@@ -14,7 +14,7 @@ compiler:
 
 script:
   - autoreconf
-  - configure
+  - ./configure
   - make
   - make install
 
