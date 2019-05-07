@@ -1,7 +1,3 @@
-#======================================================================
-# Project settings
-#======================================================================
-
 branches:
   only:
       - master
@@ -12,15 +8,15 @@ compiler:
   - gcc
   - clang
 
+before_install:
+  - sudo apt-get install -y libcurl4-openssl-dev libgpgme11-dev libxml2-dev
+
 script:
   - autoreconf
   - ./configure
   - make
   - make install
 
-#======================================================================
-# Notifications
-#======================================================================
 notifications:
   email:
     recipients: tbrown@freeshell.org
