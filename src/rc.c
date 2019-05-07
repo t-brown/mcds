@@ -184,7 +184,7 @@ read_rc(void)
 	}
 
 	if (pfile) {
-#ifdef HAVE_GPGME
+#if HAVE_GPGME == 1
 		if (pfile[0] == '~' && pfile[1] == '/') {
 			len = strlen(home) + strlen(pfile);
 			abs_file = xmalloc(len*sizeof(char));
@@ -202,8 +202,7 @@ read_rc(void)
 			return(EXIT_FAILURE);
 		}
 #else
-		warnx(_("Encrypted password files are not supportred."));
-		return(EXIT_FAILURE);
+		warnx(_("Encrypted password files are not supportred, ignoring."));
 #endif
 
 		free(abs_file);

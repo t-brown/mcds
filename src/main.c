@@ -37,6 +37,7 @@
 #include <stdlib.h>
 #include <errno.h>
 #include <err.h>
+#include <unistd.h>
 
 #include <locale.h>
 #include "gettext.h"
@@ -256,19 +257,20 @@ static void
 print_usage(void)
 {
 	printf(_("\
-usage: %s [-h] [-V] [-v] [-q n|t|e] [-s n|a|t|e] [-u URL] string\n\
+usage: %s [-h] [-V] [-v] [-q a|e|n|t] [-s a|e|n|t] [-u URL] string\n\
   -h, --help         Display this help and exit.\n\
   -V, --version      Display version information and exit.\n\
   -v, --verbose      Verbose mode.\n\
-  -q, --query  n|t|e Query term (default name). Known terms are:\n\
-                     n = name\n\
-                     t = telephone\n\
-                     e = email\n\
-  -s, --search a|t|e Search term (default email). Known terms are:\n\
-                     n = name\n\
+  -q, --query  a|e|n|t Query term (default name). Known terms are:\n\
                      a = address\n\
-                     t = telephone\n\
                      e = email\n\
+                     n = name\n\
+                     t = telephone\n\
+  -s, --search a|n|e|t Search term (default email). Known terms are:\n\
+                     a = address\n\
+                     e = email\n\
+                     n = name\n\
+                     t = telephone\n\
   -u, --url          The URL of the carddav server to query.\n\
   string             The query string to look for within the query term.\n\
 "), program_name());
@@ -288,16 +290,11 @@ Copyright (C) %s Timothy Brown.\n\
 License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>\n\
 This is free software: you are free to change and redistribute it.\n\
 There is NO WARRANTY, to the extent permitted by law.\n\n"), "2019");
-	printf(_("Compiled on %s at %s %s\n\n"), __DATE__, __TIME__,
-#ifdef HAVE_GPGME
-	       "with GPGME support."
-#else
-	       "with-out GPGME support."
-#endif
+	printf(_("Compiled on %s at %s %s GPGME support.\n\n"),
+	       __DATE__, __TIME__, ngettext("with", "with-out", HAVE_GPGME)
 	       );
 	exit(EXIT_FAILURE);
 }
-
 
 static const char *
 program_name(void)

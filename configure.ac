@@ -3,7 +3,7 @@
 #
 
 AC_PREREQ(2.61)
-AC_INIT([mcds], [1.1], [tbrown@freeshell.org])
+AC_INIT([mcds], [1.2], [tbrown@freeshell.org])
 AC_CONFIG_AUX_DIR([build-aux])
 
 # Define our M4 macro directory
@@ -63,7 +63,8 @@ AS_IF([test x$enable_gpgme != xno],
                 ],
                 [AC_MSG_ERROR([GPGME not found])])
       ],
-      [AM_CONDITIONAL([WANT_GPGME], [test x = y])]
+      [AC_DEFINE(HAVE_GPGME, 0, [GPGME not supported])
+       AM_CONDITIONAL([WANT_GPGME], [test x = y])]
 )
 
 AC_OUTPUT

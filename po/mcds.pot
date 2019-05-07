@@ -6,9 +6,9 @@
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: mcds 1.1\n"
+"Project-Id-Version: mcds 1.2\n"
 "Report-Msgid-Bugs-To: <tbrown@freeshell.org>\n"
-"POT-Creation-Date: 2019-05-07 13:52-0600\n"
+"POT-Creation-Date: 2019-05-07 15:37-0600\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -16,6 +16,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
 
 #: src/carddav.c:94
 msgid "Will not to write results to non-null pointer."
@@ -78,36 +79,37 @@ msgstr ""
 msgid "Unable to finalise null curl handle."
 msgstr ""
 
-#: src/main.c:227
+#: src/main.c:228
 msgid "Must specify a term to query for."
 msgstr ""
 
-#: src/main.c:258
+#: src/main.c:259
 #, c-format
 msgid ""
-"usage: %s [-h] [-V] [-v] [-q n|t|e] [-s n|a|t|e] [-u URL] string\n"
+"usage: %s [-h] [-V] [-v] [-q a|e|n|t] [-s a|e|n|t] [-u URL] string\n"
 "  -h, --help         Display this help and exit.\n"
 "  -V, --version      Display version information and exit.\n"
 "  -v, --verbose      Verbose mode.\n"
-"  -q, --query  n|t|e Query term (default name). Known terms are:\n"
-"                     n = name\n"
-"                     t = telephone\n"
-"                     e = email\n"
-"  -s, --search a|t|e Search term (default email). Known terms are:\n"
-"                     n = name\n"
+"  -q, --query  a|e|n|t Query term (default name). Known terms are:\n"
 "                     a = address\n"
-"                     t = telephone\n"
 "                     e = email\n"
+"                     n = name\n"
+"                     t = telephone\n"
+"  -s, --search a|n|e|t Search term (default email). Known terms are:\n"
+"                     a = address\n"
+"                     e = email\n"
+"                     n = name\n"
+"                     t = telephone\n"
 "  -u, --url          The URL of the carddav server to query.\n"
 "  string             The query string to look for within the query term.\n"
 msgstr ""
 
-#: src/main.c:285
+#: src/main.c:287
 #, c-format
 msgid "%s (GNU %s) %s\n"
 msgstr ""
 
-#: src/main.c:286
+#: src/main.c:288
 #, c-format
 msgid ""
 "Copyright (C) %s Timothy Brown.\n"
@@ -118,12 +120,18 @@ msgid ""
 "\n"
 msgstr ""
 
-#: src/main.c:291
+#: src/main.c:293
 #, c-format
 msgid ""
-"Compiled on %s at %s %s\n"
+"Compiled on %s at %s %s GPGME support.\n"
 "\n"
 msgstr ""
+
+#: src/main.c:294
+msgid "with"
+msgid_plural "with-out"
+msgstr[0] ""
+msgstr[1] ""
 
 #: src/mem.c:60
 #, c-format
@@ -165,7 +173,7 @@ msgid "Unable to build password file string"
 msgstr ""
 
 #: src/rc.c:205
-msgid "Encrypted password files are not supportred."
+msgid "Encrypted password files are not supportred, ignoring."
 msgstr ""
 
 #: src/vcard.c:83
