@@ -23,7 +23,7 @@ Building / Installation
 [autoconf](https://www.gnu.org/software/autoconf/) and
 [automake](https://www.gnu.org/software/automake/).
 
-To install `mcds` with the default options:
+To install `mcds` with the default options (this includes GPGME support):
 
     ./configure
     make

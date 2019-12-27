@@ -4,6 +4,15 @@
    language is requested. */
 #undef ENABLE_NLS
 
+/* Defined to the full path of gpg/gpg2 */
+#undef GPG
+
+/* Defined to the full path of gpgme-config */
+#undef GPGME_CONFIG
+
+/* Defined to the full path of gpgconf */
+#undef GPG_CONFIG
+
 /* Define to 1 if you have the Mac OS X function CFLocaleCopyCurrent in the
    CoreFoundation framework. */
 #undef HAVE_CFLOCALECOPYCURRENT
@@ -22,7 +31,7 @@
 /* Define if the GNU gettext() function is already present or preinstalled. */
 #undef HAVE_GETTEXT
 
-/* GPGME not supported */
+/* Define to 1 if you have GPGME support */
 #undef HAVE_GPGME
 
 /* Define if you have the iconv() function and it works. */

@@ -33,7 +33,7 @@ extern "C"
 #endif
 
 /** Read the rc file */
-int read_rc(void);
+int read_rc(const char *);
 
 #ifdef __cplusplus
 }                               /* extern "C" */

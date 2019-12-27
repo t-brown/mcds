@@ -66,7 +66,7 @@ struct opts options = {0};		/**< Program options */
 /* Internal functions */
 static void print_usage(void);
 static void print_version(void);
-static int  parse_argv(int, char **);
+static int  parse_argv(int, char **, char **);
 static const char *program_name(void);
 
 /**
@@ -82,6 +82,7 @@ int
 main(int argc, char **argv)
 {
 
+	char *file = NULL;	/* config file */
 	char *res = NULL;	/* query result */
 	CURL *hdl = NULL;	/* Curl handle */
 
@@ -99,12 +100,44 @@ main(int argc, char **argv)
 	textdomain(PACKAGE);
 #endif
 
-	if (read_rc()) {
+	/* This is kind-of wonky. We try and read our default configuration
+	 * file, then parse the command line (so it overrides the defaults),
+	 * then finally if the command line specified a configuration file
+	 * read that.
+	 */
+	if (read_rc(file)) {
 		return(EXIT_FAILURE);
 	}
 
-	if (parse_argv(argc, argv)) {
+	if (parse_argv(argc, argv, &file)) {
 		return(EXIT_FAILURE);
+	}
+
+	if (file != NULL) {
+		if (read_rc(file)) {
+			return(EXIT_FAILURE);
+		}
+	}
+
+#ifdef HAVE_UNVEIL
+	if (unveil(NULL, NULL) == -1) {
+		warn(_("Unable to disable further unveil"));
+		return(EXIT_FAILURE);
+	}
+#endif
+
+	if (options.verbose) {
+		fprintf(stderr, "%s options are:\n", program_name());
+		fprintf(stderr, "  URL        : %s\n", options.url);
+		fprintf(stderr, "  SSL Verify : %d\n", options.verify);
+		fprintf(stderr, "  Use .netrc : %d\n", options.netrc);
+		fprintf(stderr, "  Username   : %s\n", options.username);
+		fprintf(stderr, "  Password   : %s\n", options.password);
+		fprintf(stderr, "  Query term : %s\n", options.term);
+		fprintf(stderr, "  Query      : %s\n",
+				sterm_name[options.query]);
+		fprintf(stderr, "  Search     : %s\n",
+				sterm_name[options.search]);
 	}
 
 	if (cinit(&hdl)) {
@@ -134,6 +167,11 @@ main(int argc, char **argv)
 		res = NULL;
 	}
 
+	if (file) {
+		free(file);
+		file = NULL;
+	}
+
 	return(EXIT_SUCCESS);
 }
 
@@ -142,23 +180,24 @@ main(int argc, char **argv)
  *
  * \param[in] argc Number of command line arguments.
  * \param[in] argv Reference to the pointer to the argument array list.
- * \param[out] search The string to search for.
+ * \param[out] file A configuration file.
  *
  * \retval 0 If there were no errors.
  **/
 static int
-parse_argv(int argc, char **argv)
+parse_argv(int argc, char **argv, char **file)
 {
 	int opt = 0;
 	int opt_index = 0;
-	char *soptions = "hVvq:s:u:";           /* short options structure */
+	char *soptions = "c:hq:s:u:Vv";         /* short options structure */
 	static struct option loptions[] = {     /* long options structure */
+		{"config",     required_argument,  NULL,  'c'},
 		{"help",       no_argument,        NULL,  'h'},
-		{"version",    no_argument,        NULL,  'V'},
-		{"verbose",    no_argument,        NULL,  'v'},
 		{"query",      required_argument,  NULL,  'q'},
 		{"search",     required_argument,  NULL,  's'},
 		{"url",        required_argument,  NULL,  'u'},
+		{"version",    no_argument,        NULL,  'V'},
+		{"verbose",    no_argument,        NULL,  'v'},
 		{NULL,         1,                  NULL,  0}
 	};
 
@@ -170,43 +209,40 @@ parse_argv(int argc, char **argv)
 	while ((opt = getopt_long(argc, argv, soptions, loptions,
 				  &opt_index)) != -1) {
 		switch (opt) {
-		case 'V':
-			print_version();
+		case 'c':
+			*file = strdup(optarg);
 			break;
 		case 'h':
 			print_usage();
-			break;
-		case 'v':
-			options.verbose = 1;
 			break;
 		case 'q':
 			if (optarg[0] == 'a' ||
 			    optarg[0] == 'A' ) {
 				options.query = address;
+			} else if (optarg[0] == 'e' ||
+				   optarg[0] == 'E' ) {
+				options.query = email;
 			} else if (optarg[0] == 'n' ||
 				   optarg[0] == 'N' ) {
 				options.query = name;
 			} else if (optarg[0] == 't' ||
 				   optarg[0] == 'T' ) {
 				options.query = telephone;
-			} else if (optarg[0] == 'e' ||
-				   optarg[0] == 'E' ) {
-				options.query = email;
 			}
 			break;
 		case 's':
 			if (optarg[0] == 'a' ||
 			    optarg[0] == 'A' ) {
 				options.search = address;
+			} else if (optarg[0] == 'e' ||
+				   optarg[0] == 'E' ) {
+				options.search = email;
 			} else if (optarg[0] == 'n' ||
 				   optarg[0] == 'N' ) {
 				options.search = name;
 			} else if (optarg[0] == 't' ||
 				   optarg[0] == 'T' ) {
 				options.search = telephone;
-			} else if (optarg[0] == 'e' ||
-				   optarg[0] == 'E' ) {
-				options.search = email;
 			}
 			break;
 		case 'u':
@@ -215,6 +251,12 @@ parse_argv(int argc, char **argv)
 			}
 			options.url = xmalloc((strlen(optarg)+1)*sizeof(char));
 			strcpy(options.url, optarg);
+			break;
+		case 'V':
+			print_version();
+			break;
+		case 'v':
+			options.verbose = 1;
 			break;
 		default:
 			print_usage();
@@ -232,20 +274,6 @@ parse_argv(int argc, char **argv)
 	options.term = xmalloc((strlen(argv[0]) +1) * sizeof(char));
 	strcpy(options.term, argv[0]);
 
-	if (options.verbose) {
-		fprintf(stderr, "%s options are:\n", program_name());
-		fprintf(stderr, "  URL        : %s\n", options.url);
-		fprintf(stderr, "  SSL Verify : %d\n", options.verify);
-		fprintf(stderr, "  Use .netrc : %d\n", options.netrc);
-		fprintf(stderr, "  Username   : %s\n", options.username);
-		fprintf(stderr, "  Password   : %s\n", options.password);
-		fprintf(stderr, "  Query term : %s\n", options.term);
-		fprintf(stderr, "  Query      : %s\n",
-				sterm_name[options.query]);
-		fprintf(stderr, "  Search     : %s\n",
-				sterm_name[options.search]);
-	}
-
 	return(EXIT_SUCCESS);
 }
 
@@ -257,10 +285,9 @@ static void
 print_usage(void)
 {
 	printf(_("\
-usage: %s [-h] [-V] [-v] [-q a|e|n|t] [-s a|e|n|t] [-u URL] string\n\
+usage: %s [-c config] [-h] [-q a|e|n|t] [-s a|e|n|t] [-u URL] [-V] [-v] string\n\
+  -c, --config       A configuration file to use.\n\
   -h, --help         Display this help and exit.\n\
-  -V, --version      Display version information and exit.\n\
-  -v, --verbose      Verbose mode.\n\
   -q, --query  a|e|n|t Query term (default name). Known terms are:\n\
                      a = address\n\
                      e = email\n\
@@ -272,6 +299,8 @@ usage: %s [-h] [-V] [-v] [-q a|e|n|t] [-s a|e|n|t] [-u URL] string\n\
                      n = name\n\
                      t = telephone\n\
   -u, --url          The URL of the carddav server to query.\n\
+  -V, --version      Display version information and exit.\n\
+  -v, --verbose      Verbose mode.\n\
   string             The query string to look for within the query term.\n\
 "), program_name());
 	exit(EXIT_FAILURE);
