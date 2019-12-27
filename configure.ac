@@ -3,7 +3,7 @@
 #
 
 AC_PREREQ(2.61)
-AC_INIT([mcds], [1.2], [tbrown@freeshell.org])
+AC_INIT([mcds], [1.3], [tbrown@freeshell.org])
 AC_CONFIG_AUX_DIR([build-aux])
 
 # Define our M4 macro directory
@@ -27,6 +27,7 @@ AC_CONFIG_HEADERS([src/config.h])
 AX_COMPILER_VENDOR
 AC_PROG_CC
 AC_PROG_CC_STDC
+AC_PROG_AWK
 
 # Checks for header files
 AC_HEADER_STDC
@@ -50,20 +51,26 @@ AC_CONFIG_FILES([Makefile
 PKG_CHECK_MODULES([CURL], [libcurl])
 PKG_CHECK_MODULES([XML], [libxml-2.0])
 
-dnl locate gpgme
+dnl locate gpgme and gpg
+AH_TEMPLATE([GPGME_CONFIG], [Defined to the full path of gpgme-config])
+AH_TEMPLATE([GPG_CONFIG], [Defined to the full path of gpgconf])
+AH_TEMPLATE([GPG], [Defined to the full path of gpg/gpg2])
 AC_ARG_ENABLE([gpgme],
         AS_HELP_STRING([--disable-gpgme],[do not use GPGME support]))
 AS_IF([test x$enable_gpgme != xno],
-      [m4_ifdef([AM_PATH_GPGME],
-                [AM_PATH_GPGME([],
-                               [AC_DEFINE(HAVE_GPGME, 1, [GPGME support])
-                                AM_CONDITIONAL([WANT_GPGME], [test x = x])
-                               ],
-                               [AC_MSG_ERROR([GPGME not found])])
-                ],
-                [AC_MSG_ERROR([GPGME not found])])
+      [AM_PATH_GPGME([],
+                     [AC_DEFINE([HAVE_GPGME], [1], [Define to 1 if you have GPGME support])
+                      AM_CONDITIONAL([WANT_GPGME], [test x = x])
+                     ],
+                     [AC_MSG_ERROR([GPGME not found])])
+      AC_DEFINE_UNQUOTED([GPGME_CONFIG], ["$GPGME_CONFIG"])
+      AC_PATH_PROGS([GPG_CONFIG], [gpgconf], [])
+      AC_DEFINE_UNQUOTED([GPG_CONFIG], ["$GPG_CONFIG"])
+      GPG=$(eval $GPG_CONFIG | $AWK -F: '{if ($[]1 == "gpg") {print $[]NF}}')
+      AC_DEFINE_UNQUOTED([GPG], ["$GPG"])
+      enable_gpgme=yes
       ],
-      [AC_DEFINE(HAVE_GPGME, 0, [GPGME not supported])
+      [AC_DEFINE(HAVE_GPGME, 0, [Define to 1 if you have GPGME support])
        AM_CONDITIONAL([WANT_GPGME], [test x = y])]
 )
 
@@ -80,4 +87,5 @@ echo "Installation prefix        : $prefix"
 echo "C compiler                 : $ax_cv_c_compiler_vendor"
 echo "C command                  : $CC $CFLAGS"
 echo "Linker                     : $LD $LDFLAGS $LIBS"
+echo "Enable GPGME               : $enable_gpgme"
 echo

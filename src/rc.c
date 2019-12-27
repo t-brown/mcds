@@ -56,54 +56,51 @@
  * \retval 1 If an error was encounted.
  **/
 int
-read_rc(void)
+read_rc(const char *file)
 {
 
 	int i  = 0;                    /* Temporary loop indexer */
 	int ln = 0;                    /* Line number */
 	int len = 0;                   /* String length */
-	static const char file[] = ".mcdsrc"; /* Rc file name */
 	char *home = NULL;             /* Home directory */
+	char *pfile = NULL;            /* Password file */
 	char *abs_file = NULL;         /* Absolute filename */
 	FILE *ifd = NULL;              /* File descriptor */
 	char line[LINE_MAX];           /* Read line from file */
 	char *lptr = NULL;             /* Line pointer for strsep */
 	char *tmp  = NULL;             /* Temporary pointer for read variables*/
 	char *vals[2] = {0};           /* Key, value read from a line */
-	char *pfile = NULL;            /* Password file */
 	struct stat buf = {0};         /* Stat information */
 
-	home = getenv("HOME");
-	if (home == NULL) {
-		warnx(_("Unable to obtain home directory"));
-		return(EXIT_FAILURE);
+	static const char nfile[] = ".netrc";  /* Netrc file */
+	static const char rfile[] = ".mcdsrc"; /* Default rc file */
+
+	if (file == NULL) {
+		home = getenv("HOME");
+		if (home == NULL) {
+			warnx(_("Unable to obtain home directory"));
+			return(EXIT_FAILURE);
+		}
+		len = strlen(home) + strlen(rfile) + 2;
+		abs_file = xmalloc(len*sizeof(char));
+		if (snprintf(abs_file, len, "%s/%s", home, rfile) >= len) {
+			warnx(_("Unable to build rc file string"));
+			return(EXIT_FAILURE);
+		}
+	} else {
+		abs_file = strdup(file);
+		if (abs_file == NULL) {
+			warn(_("Unable to duplicate string"));
+			return(EXIT_FAILURE);
+		}
 	}
 
 #ifdef HAVE_UNVEIL
-	if (unveil(home, "r") == -1) {
-		warn(_("Unable to unveil %s"), home);
-		return(EXIT_FAILURE);
-	}
-	if (unveil("/etc/ssl", "r") == -1) {
-		warn(_("Unable to unveil /etc/ssl/"));
-		return(EXIT_FAILURE);
-	}
-	if (unveil("/usr/local/bin", "rx") == -1) {
-		warn(_("Unable to unveil /usr/local/bin"));
-		return(EXIT_FAILURE);
-	}
-	if (unveil(NULL, NULL) == -1) {
-		warn(_("Unable to disable further unveil"));
+	if (unveil(abs_file, "r") == -1) {
+		warn(_("Unable to unveil %s"), abs_file);
 		return(EXIT_FAILURE);
 	}
 #endif
-
-	len = strlen(home) + strlen(file) + 2;
-	abs_file = xmalloc(len*sizeof(char));
-	if (snprintf(abs_file, len, "%s/%s", home, file) >= len) {
-		warnx(_("Unable to build rc file string"));
-		return(EXIT_FAILURE);
-	}
 
 	/* fail silently in case the user does not have a rc file */
 	if (stat(abs_file, &buf) == -1) {
@@ -186,28 +183,79 @@ read_rc(void)
 	if (pfile) {
 #if HAVE_GPGME == 1
 		if (pfile[0] == '~' && pfile[1] == '/') {
+			home = getenv("HOME");
+			if (home == NULL) {
+				warnx(_("Unable to obtain home directory"));
+				return(EXIT_FAILURE);
+			}
 			len = strlen(home) + strlen(pfile);
 			abs_file = xmalloc(len*sizeof(char));
-			if (snprintf(abs_file, len, "%s/%s", home, pfile + 2) >= len) {
+			if (snprintf(abs_file, len, "%s/%s", home, pfile +2) >= len) {
 				warnx(_("Unable to build password file string"));
 				return(EXIT_FAILURE);
 			}
 		} else {
 			abs_file = strdup(pfile);
+			if (abs_file == NULL) {
+				warn(_("Unable to duplicate password file string"));
+				return(EXIT_FAILURE);
+			}
 		}
-		free(pfile);
-		pfile = NULL;
+#ifdef HAVE_UNVEIL
+		if (unveil(abs_file, "r") == -1) {
+			warn(_("Unable to unveil %s"), abs_file);
+			return(EXIT_FAILURE);
+		}
+#endif
+		if (pfile) {
+			free(pfile);
+			pfile = NULL;
+		}
 
 		if (decrypt(abs_file)) {
 			return(EXIT_FAILURE);
 		}
-#else
-		warnx(_("Encrypted password files are not supportred, ignoring."));
-#endif
 
-		free(abs_file);
-		abs_file = NULL;
+		if (abs_file) {
+			free(abs_file);
+			abs_file = NULL;
+		}
+#else
+		if (options.verbose == 1) {
+			warnx(_("Encrypted password files are not supportred, ignoring."));
+		}
+#endif
 	}
+
+#ifdef HAVE_UNVEIL
+	if (options.verify == 1) {
+		if (unveil("/etc/ssl", "r") == -1) {
+			warn(_("Unable to unveil %s"), "/etc/ssl/");
+			return(EXIT_FAILURE);
+		}
+	}
+	if (options.netrc == 1) {
+		home = getenv("HOME");
+		if (home == NULL) {
+			warnx(_("Unable to obtain home directory"));
+			return(EXIT_FAILURE);
+		}
+		len = strlen(home) + strlen(nfile) + 2;
+		abs_file = xmalloc(len*sizeof(char));
+		if (snprintf(abs_file, len, "%s/%s", home, nfile) >= len) {
+			warnx(_("Unable to build password file string"));
+			return(EXIT_FAILURE);
+		}
+		if (unveil(abs_file, "r") == -1) {
+			warn(_("Unable to unveil %s"), abs_file);
+			return(EXIT_FAILURE);
+		}
+		if (abs_file) {
+			free(abs_file);
+			abs_file = NULL;
+		}
+	}
+#endif
 
 	return(EXIT_SUCCESS);
 }

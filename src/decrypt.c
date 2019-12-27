@@ -65,6 +65,21 @@ decrypt(char *filename)
 	gpgme_data_t out = {0};  /* GPGME decrypted output */
 	char tmp[LINE_MAX];      /* GPGME data read */
 
+#ifdef HAVE_UNVEIL
+	if (unveil(GPGME_CONFIG, "rx") == -1) {
+		warn(_("Unable to unveil %s"), GPGME_CONFIG);
+		return(EXIT_FAILURE);
+	}
+	if (unveil(GPG_CONFIG, "rx") == -1) {
+		warn(_("Unable to unveil %s"), GPG_CONFIG);
+		return(EXIT_FAILURE);
+	}
+	if (unveil(GPG, "rx") == -1) {
+		warn(_("Unable to unveil %s"), GPG);
+		return(EXIT_FAILURE);
+	}
+#endif
+
 	gpgme_check_version(NULL);
 	if ((err = gpgme_engine_check_version(GPGME_PROTOCOL_OpenPGP)) != 0) {
 		warnx(_("Unable to initalize GPGME: %s"), gpgme_strerror(err));

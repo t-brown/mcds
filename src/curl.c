@@ -84,7 +84,6 @@ cinit(CURL **hdl)
 			warnx(_("Unable to set curls password option."));
 			return(EXIT_FAILURE);
 		}
-
 	} else {
 		if (curl_easy_setopt(*hdl, CURLOPT_NETRC, options.netrc)) {
 			warnx(_("Unable to set curls .netrc option."));

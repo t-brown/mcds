@@ -28,6 +28,7 @@
 .Nd mutt CardDAV query
 .Sh SYNOPSIS
 .Nm
+.Op Fl c Ar config_file
 .Op Fl hVv
 .Op Fl q Cm a | e | n | t
 .Op Fl s Cm a | e | n | t
@@ -42,6 +43,9 @@ It's primary function is to provide an address query command for
 .Pp
 The options are as follows:
 .Bl -tag -width Ds
+.It Fl c Pa config_file
+Specifies an alternative configuration file. The default file is
+.Pa ~/.mcdsrc .
 .It Fl h
 Print help text to standard output and exit.
 .It Fl q Cm a | e | n | t
@@ -109,6 +113,11 @@ file.
 Disabled by default.
 .It Cm username No \&= Ar USERNAME
 The username to login to the CardDAV server with.
+If a username is specified
+.Nm
+will not use the
+.Pa ~/.netrc
+file.
 .It Cm password_file No \&= Ar password.gpg
 The GPG encrypted file containg the password for the CardDAV server.
 .El
