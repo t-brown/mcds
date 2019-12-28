@@ -3,7 +3,7 @@
 #
 
 AC_PREREQ(2.61)
-AC_INIT([mcds], [1.3], [tbrown@freeshell.org])
+AC_INIT([mcds], [1.4], [tbrown@freeshell.org])
 AC_CONFIG_AUX_DIR([build-aux])
 
 # Define our M4 macro directory
@@ -27,7 +27,6 @@ AC_CONFIG_HEADERS([src/config.h])
 AX_COMPILER_VENDOR
 AC_PROG_CC
 AC_PROG_CC_STDC
-AC_PROG_AWK
 
 # Checks for header files
 AC_HEADER_STDC
@@ -55,24 +54,34 @@ dnl locate gpgme and gpg
 AH_TEMPLATE([GPGME_CONFIG], [Defined to the full path of gpgme-config])
 AH_TEMPLATE([GPG_CONFIG], [Defined to the full path of gpgconf])
 AH_TEMPLATE([GPG], [Defined to the full path of gpg/gpg2])
+
 AC_ARG_ENABLE([gpgme],
-        AS_HELP_STRING([--disable-gpgme],[do not use GPGME support]))
+        AS_HELP_STRING([--disable-gpgme], [do not use GPGME support]))
+
 AS_IF([test x$enable_gpgme != xno],
       [AM_PATH_GPGME([],
                      [AC_DEFINE([HAVE_GPGME], [1], [Define to 1 if you have GPGME support])
                       AM_CONDITIONAL([WANT_GPGME], [test x = x])
                      ],
-                     [AC_MSG_ERROR([GPGME not found])])
-      AC_DEFINE_UNQUOTED([GPGME_CONFIG], ["$GPGME_CONFIG"])
-      AC_PATH_PROGS([GPG_CONFIG], [gpgconf], [])
-      AC_DEFINE_UNQUOTED([GPG_CONFIG], ["$GPG_CONFIG"])
-      GPG=$(eval $GPG_CONFIG | $AWK -F: '{if ($[]1 == "gpg") {print $[]NF}}')
-      AC_DEFINE_UNQUOTED([GPG], ["$GPG"])
-      enable_gpgme=yes
+                     [AC_MSG_ERROR([GPGME not found, if you do not want GPGME support, rerun with --disable-gpgme])])
+       AC_DEFINE_UNQUOTED([GPGME_CONFIG], ["$GPGME_CONFIG"])
+       AC_PATH_PROG([GPG_CONFIG], [gpgconf])
+       AS_IF([test x$GPG_CONFIG != x],
+             [AC_DEFINE_UNQUOTED([GPG_CONFIG], ["$GPG_CONFIG"])],
+             [AC_MSG_ERROR([gpgconf is needed with GPGME])]
+       )
+       AC_PATH_PROGS([GPG], [gpg gpg2])
+       AS_IF([test x$GPG != x],
+             [AC_DEFINE_UNQUOTED([GPG], ["$GPG"])],
+             [AC_MSG_ERROR([gpg or gpg2 is needed with GPGME])]
+       )
+       enable_gpgme=yes
       ],
       [AC_DEFINE(HAVE_GPGME, 0, [Define to 1 if you have GPGME support])
        AM_CONDITIONAL([WANT_GPGME], [test x = y])]
 )
+
+
 
 AC_OUTPUT
 echo
