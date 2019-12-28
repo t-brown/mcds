@@ -87,7 +87,7 @@ main(int argc, char **argv)
 	CURL *hdl = NULL;	/* Curl handle */
 
 #ifdef HAVE_PLEDGE
-	if (pledge("dns exec inet proc stdio rpath unveil", NULL) == -1) {
+	if (pledge("stdio rpath inet dns proc exec unveil", NULL) == -1) {
 		err(1, "pledge");
 	}
 #endif
