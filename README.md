@@ -52,7 +52,7 @@ If you had an entry for Fred Smith it would return a result like:
 
     fred.smith@example.org   Fred Smith
 
-mcds can make use of an rc file (`${HOME}/.mcdrc`). Please read the
+mcds can make use of an rc file (`${HOME}/.mcdsrc`). Please read the
 accompanying man page for more examples and the specifications of the
 rc file.
 
