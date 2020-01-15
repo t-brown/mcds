@@ -10,4 +10,6 @@ Makefile.in
 src/.deps/
 src/config.h
 src/stamp-h1
+src/*.o
 VERSION
+*.tar.gz

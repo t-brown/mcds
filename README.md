@@ -64,7 +64,10 @@ The typical URL to query for various CardDav servers.
     `https://example.org/caldav.php/username/addresses`
 
 + [Owncloud](https://owncloud.org/)
-    `http://demo.owncloud.org/remote.php/carddav/addressbooks/username/contacts`
+    `http://example.org/remote.php/carddav/addressbooks/username/contacts`
+
++ [Nextcloud](https://nextcloud.com/)
+    `http://example.org/remote.php/dav/addressbooks/users/username/contacts`
 
 + [Gmail](https://gmail.com/)
     `https://www.googleapis.com/carddav/v1/principals/username@example.com/lists/default`

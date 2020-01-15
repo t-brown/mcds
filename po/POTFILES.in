@@ -1,5 +1,6 @@
 ./src/carddav.c
 ./src/curl.c
+./src/decrypt.c
 ./src/main.c
 ./src/mem.c
 ./src/rc.c
