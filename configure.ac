@@ -3,7 +3,7 @@
 #
 
 AC_PREREQ(2.61)
-AC_INIT([mcds], [1.5], [tbrown@freeshell.org])
+AC_INIT([mcds], [1.6], [tbrown@freeshell.org])
 AC_CONFIG_AUX_DIR([build-aux])
 
 # Define our M4 macro directory
@@ -27,6 +27,9 @@ AC_CONFIG_HEADERS([src/config.h])
 AX_COMPILER_VENDOR
 AC_PROG_CC
 AC_PROG_CC_STDC
+
+# GPGME is compiled with _FILE_OFFSET_BITS=64 on i386
+AC_SYS_LARGEFILE
 
 # Checks for header files
 AC_HEADER_STDC
