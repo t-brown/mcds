@@ -61,27 +61,33 @@ AH_TEMPLATE([GPG], [Defined to the full path of gpg/gpg2])
 AC_ARG_ENABLE([gpgme],
         AS_HELP_STRING([--disable-gpgme], [do not use GPGME support]))
 
-AS_IF([test x$enable_gpgme != xno],
-      [AM_PATH_GPGME([],
-                     [AC_DEFINE([HAVE_GPGME], [1], [Define to 1 if you have GPGME support])
-                      AM_CONDITIONAL([WANT_GPGME], [test x = x])
-                     ],
-                     [AC_MSG_ERROR([GPGME not found, if you do not want GPGME support, rerun with --disable-gpgme])])
-       AC_DEFINE_UNQUOTED([GPGME_CONFIG], ["$GPGME_CONFIG"])
-       AC_PATH_PROG([GPG_CONFIG], [gpgconf])
-       AS_IF([test x$GPG_CONFIG != x],
-             [AC_DEFINE_UNQUOTED([GPG_CONFIG], ["$GPG_CONFIG"])],
-             [AC_MSG_ERROR([gpgconf is needed with GPGME])]
-       )
-       AC_PATH_PROGS([GPG], [gpg gpg2])
-       AS_IF([test x$GPG != x],
-             [AC_DEFINE_UNQUOTED([GPG], ["$GPG"])],
-             [AC_MSG_ERROR([gpg or gpg2 is needed with GPGME])]
-       )
-       enable_gpgme=yes
-      ],
-      [AC_DEFINE(HAVE_GPGME, 0, [Define to 1 if you have GPGME support])
-       AM_CONDITIONAL([WANT_GPGME], [test x = y])]
+m4_ifdef([AM_PATH_GPGME],
+         [AS_IF([test x$enable_gpgme != xno],
+                [AM_PATH_GPGME([],
+                               [AC_DEFINE([HAVE_GPGME], [1], [Define to 1 if you have GPGME support])
+                                AM_CONDITIONAL([WANT_GPGME], [test x = x])
+                               ],
+                               [AC_MSG_ERROR([GPGME not found, if you do not want GPGME support, rerun with --disable-gpgme])])
+                 AC_DEFINE_UNQUOTED([GPGME_CONFIG], ["$GPGME_CONFIG"])
+                 AC_PATH_PROG([GPG_CONFIG], [gpgconf])
+                 AS_IF([test x$GPG_CONFIG != x],
+                       [AC_DEFINE_UNQUOTED([GPG_CONFIG], ["$GPG_CONFIG"])],
+                       [AC_MSG_ERROR([gpgconf is needed with GPGME])]
+                 )
+                 AC_PATH_PROGS([GPG], [gpg gpg2])
+                 AS_IF([test x$GPG != x],
+                       [AC_DEFINE_UNQUOTED([GPG], ["$GPG"])],
+                       [AC_MSG_ERROR([gpg or gpg2 is needed with GPGME])]
+                 )
+                 enable_gpgme=yes
+                ],
+                [AC_DEFINE(HAVE_GPGME, 0, [Define to 1 if you have GPGME support])
+                 AM_CONDITIONAL([WANT_GPGME], [test x = y])]
+          )],
+          [AC_DEFINE(HAVE_GPGME, 0, [Define to 1 if you have GPGME support])
+           AM_CONDITIONAL([WANT_GPGME], [test x = y])
+           enable_gpgme=no
+          ]
 )
 
 
