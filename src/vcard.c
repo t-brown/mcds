@@ -57,7 +57,7 @@ int
 search(const char *card)
 {
 	/* Regex patterns */
-	static const char r[] = "%s([A-Za-z;=])*:(.*)";     /* Whole result */
+	static const char r[] = "%s(.*):(.*)";     /* Whole result */
 	static const char t[] = "^%s([A-Za-z;=])*:(.*%s.*)"; /* Query term  */
 
 	int plen = 0;			/* Length of snprintf()'s */

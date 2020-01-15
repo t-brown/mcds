@@ -66,7 +66,10 @@ cinit(CURL **hdl)
 		warnx(_("Unable to initialize curl handle."));
 		return(EXIT_FAILURE);
 	}
-
+	if (curl_easy_setopt(*hdl, CURLOPT_VERBOSE, options.verbose)) {
+		warnx(_("Unable to set curls verbose option."));
+		return(EXIT_FAILURE);
+	}
 	if (curl_easy_setopt(*hdl, CURLOPT_URL, options.url)) {
 		warnx(_("Unable to set curls URL."));
 		return(EXIT_FAILURE);
