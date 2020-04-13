@@ -73,4 +73,7 @@ The typical URL to query for various CardDav servers.
     `https://www.googleapis.com/carddav/v1/principals/username@example.com/lists/default`
 where one needs to subsitute your email address for `username@example.com`.
 
++ [Baikal](https://sabre.io/baikal/)
+    `https://example.org/dav.php/addressbooks/username/default/`
+
 
