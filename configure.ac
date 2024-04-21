@@ -26,13 +26,11 @@ AC_CONFIG_HEADERS([src/config.h])
 # Checks the compiler vendor
 AX_COMPILER_VENDOR
 AC_PROG_CC
-AC_PROG_CC_STDC
 
 # GPGME is compiled with _FILE_OFFSET_BITS=64 on i386
 AC_SYS_LARGEFILE
 
 # Checks for header files
-AC_HEADER_STDC
 AC_CHECK_HEADERS([stdlib.h string.h unistd.h])
 
 # Checks for functions and libraries
