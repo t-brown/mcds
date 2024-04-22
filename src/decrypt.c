@@ -82,7 +82,7 @@ decrypt(char *filename)
 
 	gpgme_check_version(NULL);
 	if ((err = gpgme_engine_check_version(GPGME_PROTOCOL_OpenPGP)) != 0) {
-		warnx(_("Unable to initalize GPGME: %s"), gpgme_strerror(err));
+		warnx(_("Unable to initialize GPGME: %s"), gpgme_strerror(err));
 		return(EXIT_FAILURE);
 	}
 
