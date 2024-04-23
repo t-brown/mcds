@@ -41,7 +41,6 @@
 #include <fcntl.h>
 #include "gettext.h"
 #include "defs.h"
-#include "decrypt.h"
 #include "options.h"
 #include "mem.h"
 
@@ -212,12 +211,12 @@ read_rc(const char *file)
 			pfile = NULL;
 		}
 
-		if (decrypt(abs_file)) {
-			return(EXIT_FAILURE);
-		}
-
 		if (abs_file) {
-			free(abs_file);
+			/* Defer password file access so that errors don't
+			 * prevent processing of options like --version and
+			 * --help which should not be affected by
+			 * configuration errors. */
+			options.password_file = abs_file;
 			abs_file = NULL;
 		}
 #else

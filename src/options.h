@@ -55,6 +55,7 @@ struct opts {
 	char *term;
 	char *username;
 	char *password;
+	char *password_file;
 };
 
 /** Extern declarations **/
