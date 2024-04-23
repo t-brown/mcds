@@ -72,7 +72,9 @@ read_rc(const char *file)
 	char *vals[2] = {0};           /* Key, value read from a line */
 	struct stat buf = {0};         /* Stat information */
 
+#ifdef HAVE_UNVEIL
 	static const char nfile[] = ".netrc";  /* Netrc file */
+#endif
 	static const char rfile[] = ".mcdsrc"; /* Default rc file */
 
 	if (file == NULL) {
