@@ -47,6 +47,7 @@
 
 #include "defs.h"
 #include "options.h"
+#include "decrypt.h"
 #include "mem.h"
 #include "rc.h"
 #include "curl.h"
@@ -119,6 +120,11 @@ main(int argc, char **argv)
 		}
 	}
 
+	if (options.password_file &&
+	    decrypt(options.password_file)) {
+		return(EXIT_FAILURE);
+	}
+
 #ifdef HAVE_UNVEIL
 	if (unveil(NULL, NULL) == -1) {
 		warn(_("Unable to disable further unveil"));
@@ -161,6 +167,10 @@ main(int argc, char **argv)
 	if (options.term) {
 		free(options.term);
 		options.term = NULL;
+	}
+	if (options.password_file) {
+		free(options.password_file);
+		options.password_file = NULL;
 	}
 	if (res) {
 		free(res);
