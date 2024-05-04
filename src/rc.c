@@ -72,7 +72,9 @@ read_rc(const char *file)
 	char *vals[2] = {0};           /* Key, value read from a line */
 	struct stat buf = {0};         /* Stat information */
 
+#ifdef HAVE_UNVEIL
 	static const char nfile[] = ".netrc";  /* Netrc file */
+#endif
 	static const char rfile[] = ".mcdsrc"; /* Default rc file */
 
 	if (file == NULL) {
@@ -123,8 +125,9 @@ read_rc(const char *file)
 				vals[i] = xmalloc(len +1);
 				if (tmp[len-1] == '\n') {
 					strncpy(vals[i], tmp, len-1);
+					vals[i][len-1] = '\0';
 				} else {
-					strncpy(vals[i], tmp, len);
+					strncpy(vals[i], tmp, len+1);
 				}
 				++i;
 				if (i == 2) {
