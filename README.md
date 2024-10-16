@@ -19,9 +19,25 @@ Prerequisites
 Building / Installation
 -----------------------
 
+### Building from the repository
+
+If building from a source release package, e.g. the tarball shipped from
+<https://github.com/t-brown/mcds/releases>, skip to the next section.
+
 `mcds` relies on the GNU build system
 [autoconf](https://www.gnu.org/software/autoconf/) and
 [automake](https://www.gnu.org/software/automake/).
+
+To use the autotools, invoke:
+
+    autoreconf -vi
+
+This will recreate the `configure` script and other auxiliary files required
+for the build.
+
+Continue with the instructions in the next section.
+
+### Building from a source release package
 
 To install `mcds` with the default options (this includes GPGME support):
 
@@ -29,7 +45,7 @@ To install `mcds` with the default options (this includes GPGME support):
     make
     make install
 
-This will install the binrary tool in `/usr/local/bin` and man pages in
+This will install the binary tool in `/usr/local/bin` and man pages in
 `/usr/local/man`. To specify a different installation prefix, use the
 --prefix option to configure:
 
