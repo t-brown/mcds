@@ -57,7 +57,7 @@ xmalloc(size_t n)
     memset(ptr, 0, n);
     return ptr;
   } else {
-    errx(EX_SOFTWARE,_("out of memory (unable to allocate %ld bytes)"), n);
+    errx(EX_SOFTWARE,_("out of memory (unable to allocate %zu bytes)"), n);
   }
   /* should never get here */
   return NULL;
