@@ -117,15 +117,11 @@ read_rc(const char *file)
 		++ln;
 		lptr = line;
 		i = 0;
-		while ((tmp = strsep(&lptr, " \t=")) != NULL) {
+		while ((tmp = strsep(&lptr, " \t\n=")) != NULL) {
 			if (tmp[0] != '\0') {
 				len = strlen(tmp);
 				vals[i] = xmalloc(len +1);
-				if (tmp[len-1] == '\n') {
-					strncpy(vals[i], tmp, len-1);
-				} else {
-					strncpy(vals[i], tmp, len);
-				}
+				strncpy(vals[i], tmp, len +1);
 				++i;
 				if (i == 2) {
 					break;
