@@ -1,5 +1,6 @@
 /autom4te.cache
 aclocal.m4
+build-aux/*
 config.log
 config.status
 configure
@@ -9,6 +10,7 @@ Makefile
 Makefile.in
 src/.deps/
 src/config.h
+src/config.h.in
 src/stamp-h1
 src/*.o
 VERSION
