@@ -227,12 +227,13 @@ read_rc(const char *file)
 #endif
 	}
 
-#ifdef HAVE_UNVEIL
 	if (options.verify == 1) {
+#ifdef HAVE_UNVEIL
 		if (unveil("/etc/ssl", "r") == -1) {
 			warn(_("Unable to unveil %s"), "/etc/ssl/");
 			return(EXIT_FAILURE);
 		}
+#endif
 	}
 	if (options.netrc == 1) {
 		home = getenv("HOME");
@@ -246,16 +247,17 @@ read_rc(const char *file)
 			warnx(_("Unable to build password file string"));
 			return(EXIT_FAILURE);
 		}
+#ifdef HAVE_UNVEIL
 		if (unveil(abs_file, "r") == -1) {
 			warn(_("Unable to unveil %s"), abs_file);
 			return(EXIT_FAILURE);
 		}
+#endif
 		if (abs_file) {
 			free(abs_file);
 			abs_file = NULL;
 		}
 	}
-#endif
 
 	return(EXIT_SUCCESS);
 }
