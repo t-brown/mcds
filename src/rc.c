@@ -117,57 +117,55 @@ read_rc(const char *file)
 		++ln;
 		lptr = line;
 		i = 0;
-		while ((tmp = strsep(&lptr, " \t=")) != NULL) {
-			if (tmp[0] != '\0') {
-				len = strlen(tmp);
-				vals[i] = xmalloc(len +1);
-				if (tmp[len-1] == '\n') {
-					strncpy(vals[i], tmp, len-1);
-				} else {
+		if (line[0] != '\n' && line[0] != '#') {
+			while ((tmp = strsep(&lptr, " \t=\n")) != NULL) {
+				if (tmp[0] != '\0') {
+					len = strlen(tmp) +1;
+					vals[i] = xmalloc(len);
 					strncpy(vals[i], tmp, len);
+					++i;
+					if (i == 2) {
+						break;
+					}
 				}
-				++i;
-				if (i == 2) {
-					break;
+			}
+			if (strncmp("url", vals[0], 3) == 0) {
+				if (options.url == NULL) {
+					len = strlen(vals[1]) +1;
+					options.url = xmalloc(len);
+					strncpy(options.url, vals[1], len);
+				}
+			} else if (strncmp("verify", vals[0], 6) == 0) {
+				if ((vals[1][0] == 'y') || (vals[1][0] == 'Y')) {
+					options.verify = 1;
+				} else {
+					options.verify = 0;
+				}
+			} else if (strncmp("netrc", vals[0], 5) == 0) {
+				if ((vals[1][0] == 'y') || (vals[1][0] == 'Y')) {
+					options.netrc = 1;
+				} else {
+					options.netrc = 0;
+				}
+			} else if (strncmp("password_file", vals[0], 13) == 0) {
+				len = strlen(vals[1]) +1;
+				pfile = xmalloc(len);
+				strncpy(pfile, vals[1], len);
+			} else if (strncmp("username", vals[0], 8) == 0) {
+				if (options.username == NULL) {
+					len = strlen(vals[1]);
+					options.username = xmalloc(len+1);
+					strncpy(options.username, vals[1], len);
 				}
 			}
-		}
-		if (strncmp("url", vals[0], 3) == 0) {
-			if (options.url == NULL) {
-				len = strlen(vals[1]);
-				options.url = xmalloc(len+1);
-				strncpy(options.url, vals[1], len);
+			if (vals[0]) {
+				free(vals[0]);
+				vals[0] = NULL;
 			}
-		} else if (strncmp("verify", vals[0], 7) == 0) {
-			if ((vals[1][0] == 'y') || (vals[1][0] == 'Y')) {
-				options.verify = 1;
-			} else {
-				options.verify = 0;
+			if (vals[1]) {
+				free(vals[1]);
+				vals[1] = NULL;
 			}
-		} else if (strncmp("netrc", vals[0], 5) == 0) {
-			if ((vals[1][0] == 'y') || (vals[1][0] == 'Y')) {
-				options.netrc = 1;
-			} else {
-				options.netrc = 0;
-			}
-		} else if (strncmp("password_file", vals[0], 13) == 0) {
-			len = strlen(vals[1]);
-			pfile = xmalloc(len+1);
-			strncpy(pfile, vals[1], len);
-		} else if (strncmp("username", vals[0], 8) == 0) {
-			if (options.username == NULL) {
-				len = strlen(vals[1]);
-				options.username = xmalloc(len+1);
-				strncpy(options.username, vals[1], len);
-			}
-		}
-		if (vals[0]) {
-			free(vals[0]);
-			vals[0] = NULL;
-		}
-		if (vals[1]) {
-			free(vals[1]);
-			vals[1] = NULL;
 		}
 	}
 
