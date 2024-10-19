@@ -32,7 +32,7 @@ msgid "Unable to search for %s: %s"
 msgstr ""
 
 #: src/carddav.c:140
-msgid "Unable to obtain a result."
+msgid "Unable to obtain a result: %d (%d bytes)."
 msgstr ""
 
 #: src/carddav.c:195

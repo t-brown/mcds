@@ -86,6 +86,7 @@ query(CURL *hdl, char **result)
 	int plen = 0;
 	size_t len = 0;
 	char *s = NULL;
+	long response_code;
 	CURLcode res = CURLE_OK;
 	struct curl_slist *hdrs = NULL;
 	struct r_data buffer = {0};
@@ -128,6 +129,8 @@ query(CURL *hdl, char **result)
 	curl_easy_setopt(hdl, CURLOPT_WRITEDATA, (void *)&buffer);
 
 	res = curl_easy_perform(hdl);
+	if (res == CURLE_OK)
+		res = curl_easy_getinfo(hdl, CURLINFO_RESPONSE_CODE, &response_code);
 	if (res != CURLE_OK) {
 		warnx(_("Unable to search for %s: %s"),
 				options.term, curl_easy_strerror(res));
@@ -136,8 +139,10 @@ query(CURL *hdl, char **result)
 	/* Write out a blank line for mutt */
 	printf("\n");
 
-	if (buffer.size == 0) {
-		warnx(_("Unable to obtain a result."));
+	if (response_code < 200 || response_code > 299 ||
+	    buffer.size == 0) {
+		warnx(_("Unable to obtain a result: %d (%d bytes)."),
+		      response_code, buffer.size);
 		return(EXIT_FAILURE);
 	}
 	*result = xmalloc(buffer.size+1);
