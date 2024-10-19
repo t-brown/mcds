@@ -100,23 +100,12 @@ main(int argc, char **argv)
 	textdomain(PACKAGE);
 #endif
 
-	/* This is kind-of wonky. We try and read our default configuration
-	 * file, then parse the command line (so it overrides the defaults),
-	 * then finally if the command line specified a configuration file
-	 * read that.
-	 */
-	if (read_rc(file)) {
-		return(EXIT_FAILURE);
-	}
-
 	if (parse_argv(argc, argv, &file)) {
 		return(EXIT_FAILURE);
 	}
 
-	if (file != NULL) {
-		if (read_rc(file)) {
-			return(EXIT_FAILURE);
-		}
+	if (read_rc(file)) {
+		return(EXIT_FAILURE);
 	}
 
 #ifdef HAVE_UNVEIL
