@@ -1,0 +1,24 @@
+name: build
+run-name: ${{ github.actor }} build
+
+on:
+  push:
+    branches: [ "master" ]
+  pull_request:
+    branches: [ "master" ]
+
+jobs:
+  building:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install dependencies
+        run: sudo apt-get install -y autopoint gettext libcurl4-openssl-dev
+      - name: Configure build system
+        run: autoreconf -vi
+      - name: Configure
+        run: ./configure
+      - name: Build
+        run: make
+
+
