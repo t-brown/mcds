@@ -6,9 +6,9 @@
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: mcds 1.2\n"
+"Project-Id-Version: mcds 1.6\n"
 "Report-Msgid-Bugs-To: <tbrown@freeshell.org>\n"
-"POT-Creation-Date: 2019-05-07 15:37-0600\n"
+"POT-Creation-Date: 2024-10-20 11:09-0600\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,24 +18,25 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
 
-#: src/carddav.c:94
+#: src/carddav.c:95
 msgid "Will not to write results to non-null pointer."
 msgstr ""
 
-#: src/carddav.c:109
+#: src/carddav.c:110
 msgid "Unable to build search string."
 msgstr ""
 
-#: src/carddav.c:132
+#: src/carddav.c:135
 #, c-format
 msgid "Unable to search for %s: %s"
 msgstr ""
 
-#: src/carddav.c:140
-msgid "Unable to obtain a result: %d (%d bytes)."
+#: src/carddav.c:144
+#, c-format
+msgid "Unable to obtain a result: %ld (%zu bytes)."
 msgstr ""
 
-#: src/carddav.c:195
+#: src/carddav.c:200
 msgid "Unable to extend the response data buffer"
 msgstr ""
 
@@ -51,45 +52,102 @@ msgstr ""
 msgid "Unable to initialize curl handle."
 msgstr ""
 
-#: src/curl.c:71
+#: src/curl.c:70
+msgid "Unable to set curls verbose option."
+msgstr ""
+
+#: src/curl.c:74
 msgid "Unable to set curls URL."
 msgstr ""
 
-#: src/curl.c:75
+#: src/curl.c:78
 msgid "Unable to set curls SSL verification."
 msgstr ""
 
-#: src/curl.c:80
+#: src/curl.c:83
 msgid "Unable to set curls username option."
 msgstr ""
 
-#: src/curl.c:84
+#: src/curl.c:87
 msgid "Unable to set curls password option."
 msgstr ""
 
-#: src/curl.c:90
+#: src/curl.c:92
 msgid "Unable to set curls .netrc option."
 msgstr ""
 
-#: src/curl.c:95
+#: src/curl.c:97
 msgid "Unable to set curls HTTP auth method."
 msgstr ""
 
-#: src/curl.c:115
+#: src/curl.c:117
 msgid "Unable to finalise null curl handle."
 msgstr ""
 
-#: src/main.c:228
-msgid "Must specify a term to query for."
+#: src/decrypt.c:70 src/decrypt.c:74 src/decrypt.c:78 src/rc.c:100 src/rc.c:204
+#: src/rc.c:231 src/rc.c:250
+#, c-format
+msgid "Unable to unveil %s"
+msgstr ""
+
+#: src/decrypt.c:85
+#, c-format
+msgid "Unable to initialize GPGME: %s"
+msgstr ""
+
+#: src/decrypt.c:90
+#, c-format
+msgid "Unable to open password file: %s"
+msgstr ""
+
+#: src/decrypt.c:95
+#, c-format
+msgid "Unable to create new context: %s"
+msgstr ""
+
+#: src/decrypt.c:101
+#, c-format
+msgid "Unable to get encrypted password: %s"
+msgstr ""
+
+#: src/decrypt.c:107
+#, c-format
+msgid "Unable to create GPGME data: %s"
+msgstr ""
+
+#: src/decrypt.c:113
+#, c-format
+msgid "Unable to decrypt password: %s"
+msgstr ""
+
+#: src/decrypt.c:118
+#, c-format
+msgid "Unable to seek: %s"
+msgstr ""
+
+#: src/decrypt.c:126
+msgid "Unable to realloc password."
+msgstr ""
+
+#: src/decrypt.c:134
+msgid "Unable to close password file."
+msgstr ""
+
+#: src/main.c:113
+msgid "Unable to disable further unveil"
 msgstr ""
 
 #: src/main.c:259
+msgid "Must specify a term to query for."
+msgstr ""
+
+#: src/main.c:276
 #, c-format
 msgid ""
-"usage: %s [-h] [-V] [-v] [-q a|e|n|t] [-s a|e|n|t] [-u URL] string\n"
+"usage: %s [-c config] [-h] [-q a|e|n|t] [-s a|e|n|t] [-u URL] [-V] [-v] "
+"string\n"
+"  -c, --config       A configuration file to use.\n"
 "  -h, --help         Display this help and exit.\n"
-"  -V, --version      Display version information and exit.\n"
-"  -v, --verbose      Verbose mode.\n"
 "  -q, --query  a|e|n|t Query term (default name). Known terms are:\n"
 "                     a = address\n"
 "                     e = email\n"
@@ -101,15 +159,17 @@ msgid ""
 "                     n = name\n"
 "                     t = telephone\n"
 "  -u, --url          The URL of the carddav server to query.\n"
+"  -V, --version      Display version information and exit.\n"
+"  -v, --verbose      Verbose mode.\n"
 "  string             The query string to look for within the query term.\n"
 msgstr ""
 
-#: src/main.c:287
+#: src/main.c:305
 #, c-format
 msgid "%s (GNU %s) %s\n"
 msgstr ""
 
-#: src/main.c:288
+#: src/main.c:306
 #, c-format
 msgid ""
 "Copyright (C) %s Timothy Brown.\n"
@@ -120,14 +180,14 @@ msgid ""
 "\n"
 msgstr ""
 
-#: src/main.c:293
+#: src/main.c:311
 #, c-format
 msgid ""
 "Compiled on %s at %s %s GPGME support.\n"
 "\n"
 msgstr ""
 
-#: src/main.c:294
+#: src/main.c:312
 msgid "with"
 msgid_plural "with-out"
 msgstr[0] ""
@@ -135,44 +195,35 @@ msgstr[1] ""
 
 #: src/mem.c:60
 #, c-format
-msgid "out of memory (unable to allocate %ld bytes)"
+msgid "out of memory (unable to allocate %zu bytes)"
 msgstr ""
 
-#: src/rc.c:78
+#: src/rc.c:81 src/rc.c:186 src/rc.c:239
 msgid "Unable to obtain home directory"
 msgstr ""
 
-#: src/rc.c:84
-#, c-format
-msgid "Unable to unveil %s"
-msgstr ""
-
-#: src/rc.c:88
-msgid "Unable to unveil /etc/ssl/"
-msgstr ""
-
-#: src/rc.c:92
-msgid "Unable to unveil /usr/local/bin"
-msgstr ""
-
-#: src/rc.c:96
-msgid "Unable to disable further unveil"
-msgstr ""
-
-#: src/rc.c:104
+#: src/rc.c:87
 msgid "Unable to build rc file string"
 msgstr ""
 
-#: src/rc.c:178
+#: src/rc.c:93
+msgid "Unable to duplicate string"
+msgstr ""
+
+#: src/rc.c:173
 #, c-format
 msgid "Unable to close %s"
 msgstr ""
 
-#: src/rc.c:192
+#: src/rc.c:192 src/rc.c:245
 msgid "Unable to build password file string"
 msgstr ""
 
-#: src/rc.c:205
+#: src/rc.c:198
+msgid "Unable to duplicate password file string"
+msgstr ""
+
+#: src/rc.c:223
 msgid "Encrypted password files are not supportred, ignoring."
 msgstr ""
 
