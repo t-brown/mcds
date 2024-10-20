@@ -141,7 +141,7 @@ query(CURL *hdl, char **result)
 
 	if (response_code < 200 || response_code > 299 ||
 	    buffer.size == 0) {
-		warnx(_("Unable to obtain a result: %d (%d bytes)."),
+		warnx(_("Unable to obtain a result: %ld (%zu bytes)."),
 		      response_code, buffer.size);
 		return(EXIT_FAILURE);
 	}
