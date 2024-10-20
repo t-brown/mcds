@@ -44,6 +44,7 @@
 #include "decrypt.h"
 #include "options.h"
 #include "mem.h"
+#include "secret.h"
 
 #ifndef LINE_MAX
 #define LINE_MAX          sysconf(_SC_LINE_MAX)
@@ -178,7 +179,19 @@ read_rc(const char *file)
 		abs_file = NULL;
 	}
 
-	if (pfile) {
+	if (options.username == NULL) {
+		options.username = getenv("USER");
+	}
+
+#if HAVE_LIBSECRET
+	if (!options.pwprompt) {
+		lookup_password();
+	}
+#endif
+
+	if (options.password == NULL &&
+	    !options.pwprompt &&
+	    pfile) {
 #if HAVE_GPGME == 1
 		if (pfile[0] == '~' && pfile[1] == '/') {
 			home = getenv("HOME");
@@ -233,7 +246,9 @@ read_rc(const char *file)
 		}
 #endif
 	}
-	if (options.netrc == 1) {
+	if (options.password == NULL &&
+	    !options.pwprompt &&
+	    options.netrc == 1) {
 		home = getenv("HOME");
 		if (home == NULL) {
 			warnx(_("Unable to obtain home directory"));
@@ -255,6 +270,16 @@ read_rc(const char *file)
 			free(abs_file);
 			abs_file = NULL;
 		}
+	}
+
+	if ((options.pwprompt = options.password == NULL ? 1 : 0)) {
+		prompt_password();
+#if HAVE_LIBSECRET
+		if (options.password && options.password[0] == '\0') {
+			clear_password();
+			options.password = NULL;
+		}
+#endif
 	}
 
 	return(EXIT_SUCCESS);

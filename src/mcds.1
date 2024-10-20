@@ -48,6 +48,8 @@ Specifies an alternative configuration file. The default file is
 .Pa ~/.mcdsrc .
 .It Fl h
 Print help text to standard output and exit.
+.It Fl p
+Force the presentation of a password prompt.
 .It Fl q Cm a | e | n | t
 The term to query against.
 Known terms are:
@@ -159,6 +161,14 @@ netrc = yes
 Now the query command can be shortened to:
 .Bd -literal -offset indent
 set query_command="mcds '%s'"
+.Ed
+.Pp
+When compiled against libsecret,
+.Nm
+saves passwords provided at the password prompt. To replace the saved
+password (or to clear, entering no password at the prompt):
+.Bd -literal -offset indent
+mcds -p
 .Ed
 .Sh SEE ALSO
 .Xr curl 1 ,

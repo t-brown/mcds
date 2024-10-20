@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2014 Timothy Brown
+ * Copyright (C) 2024 Andrew Bower
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -17,56 +17,44 @@
  */
 
 /**
- * \file options.h
- * Internal definitions for program options.
+ * \file secret.h
+ * Internal definitions for accessing credential store.
  *
- * \ingroup options
+ * \ingroup secret
  * \{
  **/
 
-#ifndef MCDS_OPTIONS_H
-#define MCDS_OPTIONS_H
+#ifndef MCDS_SECRET_H
+#define MCDS_SECRET_H
+
+#if HAVE_LIBSECRET
+#include <libsecret/secret.h>
+#endif
 
 #ifdef __cplusplus
 extern "C"
 {
 #endif
 
-#define STERMS_TABLE            \
-	X(name,        "FN")    \
-	X(email,       "EMAIL") \
-	X(address,     "ADR")   \
-	X(telephone,   "TEL")
+#if HAVE_LIBSECRET
+/** Save password in user's credential store */
+void store_password(void);
 
-#define X(a, b) a,
-enum s_terms {
-	STERMS_TABLE
-};
-#undef X
+/** Lookup password in user's credential store */
+void lookup_password(void);
 
-/** Program command line options **/
-struct opts {
-	int verbose;
-	int verify;
-	int netrc;
-	int pwprompt;
-	enum s_terms query;
-	enum s_terms search;
-	char *url;
-	char *term;
-	char *username;
-	char *password;
-};
+/** Clear password in user's credential store */
+void clear_password(void);
+#endif
 
-/** Extern declarations **/
-extern struct opts options;
-extern char *sterm_name[];
+/** Prompt for user's password */
+void prompt_password(void);
 
 #ifdef __cplusplus
 }                               /* extern "C" */
 #endif
 
-#endif                          /* MCDS_OPTIONS_H */
+#endif                          /* MCDS_SECRET_H */
 /**
  * \}
  **/

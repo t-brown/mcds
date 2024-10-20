@@ -6,11 +6,13 @@ bin_PROGRAMS = mcds
 
 mcds_CPPFLAGS = $(CURL_CFLAGS)                  \
                 $(XML_CFLAGS)                   \
+                $(SECRET_CFLAGS)                \
                 $(GPGME_CFLAGS)
 
 mcds_LDADD = $(LTLIBINTL)                       \
              $(CURL_LIBS)                       \
              $(XML_LIBS)                        \
+             $(SECRET_LIBS)                     \
              $(GPGME_LIBS)
 
 mcds_SOURCES = defs.h                           \
@@ -21,6 +23,7 @@ mcds_SOURCES = defs.h                           \
                carddav.c        carddav.h       \
                xml.c            xml.h           \
                vcard.c          vcard.h         \
+	       secret.c         secret.h        \
                rc.c             rc.h
 
 if WANT_GPGME
