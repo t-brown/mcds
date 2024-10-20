@@ -1,7 +1,7 @@
 MCDS
 ====
 
-[![Build Status](https://travis-ci.com/t-brown/mcds.svg?branch=master)](https://travis-ci.com/t-brown/mcds)
+![Build Status](https://github.com/t-brown/mcds/actions/workflows/build.yaml/badge.svg)
 
 `mcds` is a command line tool primarily used as a search query plugin
 for mutt to query a CardDav server.
