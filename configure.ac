@@ -24,7 +24,6 @@ AC_CONFIG_SRCDIR([src/main.c])
 AC_CONFIG_HEADERS([src/config.h])
 
 # Checks the compiler vendor
-AX_COMPILER_VENDOR
 AC_PROG_CC
 
 # GPGME is compiled with _FILE_OFFSET_BITS=64 on i386
@@ -100,7 +99,6 @@ echo
 echo "Configuration Options Summary:"
 echo
 echo "Installation prefix        : $prefix"
-echo "C compiler                 : $ax_cv_c_compiler_vendor"
 echo "C command                  : $CC $CFLAGS"
 echo "Linker                     : $LD $LDFLAGS $LIBS"
 echo "Enable GPGME               : $enable_gpgme"
