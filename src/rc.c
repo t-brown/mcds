@@ -187,7 +187,7 @@ read_rc(const char *file)
 	}
 
 	if (options.username == NULL) {
-		options.username = getenv("USER");
+		options.username = strdup(getenv("USER"));
 	}
 
 	if (options.pwprompt) {
