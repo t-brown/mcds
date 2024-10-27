@@ -52,7 +52,6 @@
 #include "curl.h"
 #include "carddav.h"
 #include "xml.h"
-#include "secret.h"
 
 
 /* Initalise extern definitions */
@@ -118,16 +117,17 @@ main(int argc, char **argv)
 
 	if (options.verbose) {
 		fprintf(stderr, "%s options are:\n", program_name());
-		fprintf(stderr, "  URL        : %s\n", options.url);
-		fprintf(stderr, "  SSL Verify : %d\n", options.verify);
-		fprintf(stderr, "  Use .netrc : %d\n", options.netrc);
-		fprintf(stderr, "  PW prompted: %d\n", options.pwprompt);
-		fprintf(stderr, "  Username   : %s\n", options.username);
-		fprintf(stderr, "  Password   : %s\n", options.password);
-		fprintf(stderr, "  Query term : %s\n", options.term);
-		fprintf(stderr, "  Query      : %s\n",
+		fprintf(stderr, "  URL               : %s\n", options.url);
+		fprintf(stderr, "  SSL Verify        : %d\n", options.verify);
+		fprintf(stderr, "  Use .netrc        : %d\n", options.netrc);
+		fprintf(stderr, "  Use libsecret     : %d\n", options.libsecret);
+		fprintf(stderr, "  Password prompted : %d\n", options.pwprompt);
+		fprintf(stderr, "  Username          : %s\n", options.username);
+		fprintf(stderr, "  Password          : %s\n", options.password);
+		fprintf(stderr, "  Query term        : %s\n", options.term);
+		fprintf(stderr, "  Query             : %s\n",
 				sterm_name[options.query]);
-		fprintf(stderr, "  Search     : %s\n",
+		fprintf(stderr, "  Search            : %s\n",
 				sterm_name[options.search]);
 	}
 
@@ -136,12 +136,7 @@ main(int argc, char **argv)
 	}
 	if (query(hdl, &res)) {
 		return(EXIT_FAILURE);
-}
-#if HAVE_LIBSECRET
-	if (options.pwprompt && options.password) {
-		store_password();
 	}
-#endif
 	if (cfini(&hdl)) {
 		return(EXIT_FAILURE);
 	}
@@ -197,12 +192,12 @@ parse_argv(int argc, char **argv, char **file)
 	static struct option loptions[] = {     /* long options structure */
 		{"config",     required_argument,  NULL,  'c'},
 		{"help",       no_argument,        NULL,  'h'},
+		{"password",   no_argument,        NULL,  'p'},
 		{"query",      required_argument,  NULL,  'q'},
 		{"search",     required_argument,  NULL,  's'},
 		{"url",        required_argument,  NULL,  'u'},
 		{"version",    no_argument,        NULL,  'V'},
 		{"verbose",    no_argument,        NULL,  'v'},
-		{"password",   no_argument,        NULL,  'p'},
 		{NULL,         1,                  NULL,  0}
 	};
 
@@ -296,7 +291,7 @@ print_usage(void)
 usage: %s [-c config] [-h] [-q a|e|n|t] [-s a|e|n|t] [-u URL] [-V] [-v] string\n\
   -c, --config       A configuration file to use.\n\
   -h, --help         Display this help and exit.\n\
-  -p, --password     Force a password prompt.\n\
+  -p, --password     Prompt for a password.\n\
   -q, --query  a|e|n|t Query term (default name). Known terms are:\n\
                      a = address\n\
                      e = email\n\
@@ -329,8 +324,8 @@ License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>\n\
 This is free software: you are free to change and redistribute it.\n\
 There is NO WARRANTY, to the extent permitted by law.\n\n"), "2019");
 	printf(_("Compiled on %s at %s:\n"
-		 "  %s GPGME support and\n"
-		 "  %s libsecret support.\n\n"),
+		 " -  %s GPGME support.\n"
+		 " - %s libsecret support.\n\n"),
 	       __DATE__, __TIME__,
 	       ngettext("with", "with-out", HAVE_GPGME),
 	       ngettext("with", "with-out", HAVE_LIBSECRET)

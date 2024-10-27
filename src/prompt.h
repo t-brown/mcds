@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2014 Timothy Brown
+ * Copyright (C) 2024 Andrew Bower
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -17,57 +17,29 @@
  */
 
 /**
- * \file options.h
- * Internal definitions for program options.
+ * \file prompt.h
+ * Internal definitions for password prompting.
  *
- * \ingroup options
+ * \ingroup secret
  * \{
  **/
 
-#ifndef MCDS_OPTIONS_H
-#define MCDS_OPTIONS_H
+#ifndef MCDS_PROMPT_H
+#define MCDS_PROMPT_H
 
 #ifdef __cplusplus
 extern "C"
 {
 #endif
 
-#define STERMS_TABLE            \
-	X(name,        "FN")    \
-	X(email,       "EMAIL") \
-	X(address,     "ADR")   \
-	X(telephone,   "TEL")
-
-#define X(a, b) a,
-enum s_terms {
-	STERMS_TABLE
-};
-#undef X
-
-/** Program command line options **/
-struct opts {
-	int verbose;
-	int verify;
-	int netrc;
-	int pwprompt;
-	int libsecret;
-	enum s_terms query;
-	enum s_terms search;
-	char *url;
-	char *term;
-	char *username;
-	char *password;
-};
-
-/** Extern declarations **/
-extern struct opts options;
-extern char *sterm_name[];
+/** Prompt for user's password */
+int prompt_password(void);
 
 #ifdef __cplusplus
 }                               /* extern "C" */
 #endif
 
-#endif                          /* MCDS_OPTIONS_H */
+#endif                          /* MCDS_PROMPT_H */
 /**
  * \}
  **/

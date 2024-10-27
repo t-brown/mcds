@@ -59,13 +59,16 @@ AS_IF([test "$HAVE_PKG_LIBSECRET" != "0"],
                 [AC_DEFINE([HAVE_LIBSECRET], [1], [Define to 1 if you have libsecret support])
 		 AC_SUBST(LIBSECRET_CFLAGS)
 		 AC_SUBST(LIBSECRET_LIBS)
+		 AM_CONDITIONAL([WANT_LIBSECRET], [test x = x])
                  enable_libsecret=yes
                 ],
                 [AC_DEFINE([HAVE_LIBSECRET], [0], [Define to 1 if you have libsecret support])
+		 AM_CONDITIONAL([WANT_LIBSECRET], [test x = y])
                  enable_libsecret=no
 		]
           )],
           [AC_DEFINE([HAVE_LIBSECRET], [0], [Define to 1 if you have libsecret support])
+           AM_CONDITIONAL([WANT_LIBSECRET], [test x = y])
            enable_libsecret=no
           ]
 )

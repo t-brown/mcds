@@ -36,19 +36,14 @@ extern "C"
 {
 #endif
 
-#if HAVE_LIBSECRET
 /** Save password in user's credential store */
-void store_password(void);
+int store_password(void);
 
 /** Lookup password in user's credential store */
-void lookup_password(void);
+int lookup_password(void);
 
 /** Clear password in user's credential store */
-void clear_password(void);
-#endif
-
-/** Prompt for user's password */
-void prompt_password(void);
+int clear_password(void);
 
 #ifdef __cplusplus
 }                               /* extern "C" */

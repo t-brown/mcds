@@ -23,11 +23,15 @@ mcds_SOURCES = defs.h                           \
                carddav.c        carddav.h       \
                xml.c            xml.h           \
                vcard.c          vcard.h         \
-	       secret.c         secret.h        \
-               rc.c             rc.h
+               rc.c             rc.h            \
+	       prompt.c         prompt.h
 
 if WANT_GPGME
 mcds_SOURCES += decrypt.c       decrypt.h
+endif
+
+if WANT_LIBSECRET
+mcds_SOURCES +=	secret.c         secret.h
 endif
 
 noinst_HEADERS = gettext.h

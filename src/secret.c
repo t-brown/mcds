@@ -1,4 +1,3 @@
-
 /*
  * Copyright (C) 2024  Andrew Bower
  *
@@ -42,8 +41,9 @@
 #include <termios.h>
 #include "gettext.h"
 #include "defs.h"
-#include "options.h"
 #include "mem.h"
+#include "options.h"
+#include "prompt.h"
 #include "secret.h"
 
 #if HAVE_LIBSECRET
@@ -63,7 +63,7 @@ static const SecretSchema mcds_secret_schema = {
 	}
 };
 
-void
+int
 store_password(void)
 {
 	GError *error = NULL;
@@ -81,9 +81,10 @@ store_password(void)
 		warnx(_("error storing password with libsecret: %s"), error->message);
 		g_error_free(error);
 	}
+	return(EXIT_SUCCESS);
 }
 
-void
+int
 lookup_password(void)
 {
 	GError *error = NULL;
@@ -94,17 +95,19 @@ lookup_password(void)
 						      MCDS_SECRET_KEY_USER, options.username,
 						      NULL);
 	if (error) {
-		/* This is a non-fatal condition. */
 		warnx(_("error retrieving password with libsecret: %s"), error->message);
 		g_error_free(error);
+		return(EXIT_FAILURE);
 	}
 
-	if (password)
+	if (password) {
 		options.password = strdup(password);
+	}
 	secret_password_free(password);
+	return(EXIT_SUCCESS);
 }
 
-void
+int
 clear_password(void)
 {
 	GError *error = NULL;
@@ -119,64 +122,10 @@ clear_password(void)
 		warnx(_("error clearing password with libsecret: %s"), error->message);
 		g_error_free(error);
 	}
+	return(EXIT_SUCCESS);
 }
 #endif
 
-void
-prompt_password(void)
-{
-	struct termios tios_save;
-	struct termios tios;
-	FILE *console;
-	char *password = NULL;
-	int console_fd;
-	ssize_t len;
-	ssize_t sz;
-
-	/* Open controlling terminal */
-	console = fopen("/dev/tty", "w+");
-	if (console == NULL) {
-		warn(_("Could not open console for password prompt"));
-		return;
-	}
-	console_fd = fileno(console);
-
-	/* Output prompt */
-	fprintf(console, _("mcds: password for %s at %s: "),
-		options.username, options.url);
-	fflush(console);
-
-	/* Do not echo password */
-	if (tcgetattr(console_fd, &tios_save) != 0) {
-	  warn(_("Could not turn off echo for password prompt"));
-		goto finish;
-	}
-      	tios = tios_save;
-	tios.c_lflag &= ~ECHO;
-  	if (tcsetattr(console_fd, TCSAFLUSH, &tios) != 0) {
-	  warn(_("Could not turn off echo for password prompt"));
-		goto finish;
-	}
-
-	/* Read password */
-	len = getline(&password, &sz, console);
-	fprintf(console, "\n");
-	fflush(console);
-	if (len < 1) {
-		free(password); /* Yes, getline(3) says to do this! */
-		warn(_("Could not read password"));
-	} else {
-		/* Remove line ending */
-		password[len - 1] = '\0';
-		options.password = password;
-	}
-
-	/* Restore echo state */
-	tcsetattr(console_fd, TCSAFLUSH, &tios_save);
-
-finish:
-	fclose(console);
-}
 
 /**
  * \}
