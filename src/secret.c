@@ -77,9 +77,9 @@ store_password(void)
 				   MCDS_SECRET_KEY_USER, options.username,
 				   NULL);
 	if (error) {
-		/* This is a non-fatal condition. */
 		warnx(_("error storing password with libsecret: %s"), error->message);
 		g_error_free(error);
+		return(EXIT_FAILURE);
 	}
 	return(EXIT_SUCCESS);
 }

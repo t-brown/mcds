@@ -51,6 +51,7 @@ struct opts {
 	int netrc;
 	int pwprompt;
 	int libsecret;
+	int save;
 	enum s_terms query;
 	enum s_terms search;
 	char *url;

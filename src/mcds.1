@@ -20,7 +20,7 @@
 .\"
 .\" $Id$
 .\"
-.Dd March 4, 2014
+.Dd November 5, 2024
 .Dt MCDS 1
 .Os
 .Sh NAME
@@ -29,8 +29,9 @@
 .Sh SYNOPSIS
 .Nm
 .Op Fl c Ar config_file
-.Op Fl hVv
+.Op Fl hVvp
 .Op Fl q Cm a | e | n | t
+.Op Fl S
 .Op Fl s Cm a | e | n | t
 .Op Fl u Ar URL
 .Ar term
@@ -64,6 +65,8 @@ Query for the full-name field.
 .It Cm t
 Query for the telephone field.
 .El
+.It Fl S
+Save the password.
 .It Fl s Cm a | e | n | t
 The search term to return.
 Known terms are:
@@ -122,6 +125,10 @@ will not use the
 file.
 .It Cm password_file No \&= Ar password.gpg
 The GPG encrypted file containing the password for the CardDAV server.
+.It Cm libsecret No \&= Op Cm yes | no
+Use 
+.Lb libsecret
+to store and retrieve the password.
 .El
 .It Pa ~/.netrc
 Used to access your username and password when authenticating with the

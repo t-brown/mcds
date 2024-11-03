@@ -55,7 +55,7 @@ prompt_password(void)
 	char *password = NULL;
 	int console_fd;
 	ssize_t len;
-	ssize_t sz;
+	size_t sz;
 
 	/* Open controlling terminal */
 	console = fopen("/dev/tty", "w+");
