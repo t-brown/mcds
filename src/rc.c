@@ -40,10 +40,12 @@
 #include <sys/stat.h>
 #include <fcntl.h>
 #include "gettext.h"
-#include "defs.h"
 #include "decrypt.h"
-#include "options.h"
+#include "defs.h"
 #include "mem.h"
+#include "options.h"
+#include "prompt.h"
+#include "secret.h"
 
 #ifndef LINE_MAX
 #define LINE_MAX          sysconf(_SC_LINE_MAX)
@@ -147,6 +149,12 @@ read_rc(const char *file)
 				} else {
 					options.netrc = 0;
 				}
+			} else if (strncmp("libsecret", vals[0], 9) == 0) {
+				if ((vals[1][0] == 'y') || (vals[1][0] == 'Y')) {
+					options.libsecret = 1;
+				} else {
+					options.libsecret = 0;
+				}
 			} else if (strncmp("password_file", vals[0], 13) == 0) {
 				len = strlen(vals[1]) +1;
 				pfile = xmalloc(len);
@@ -178,7 +186,27 @@ read_rc(const char *file)
 		abs_file = NULL;
 	}
 
-	if (pfile) {
+	if (options.username == NULL) {
+		options.username = strdup(getenv("USER"));
+	}
+
+	if (options.pwprompt) {
+		prompt_password();
+	}
+
+#if HAVE_LIBSECRET
+	if (options.libsecret) {
+		if (!options.pwprompt) {
+			if (lookup_password() == 1) {
+				return(EXIT_FAILURE);
+			}
+		} else {
+			store_password();
+		}
+	}
+#endif
+
+	if (options.password == NULL && pfile) {
 #if HAVE_GPGME == 1
 		if (pfile[0] == '~' && pfile[1] == '/') {
 			home = getenv("HOME");
@@ -233,7 +261,8 @@ read_rc(const char *file)
 		}
 #endif
 	}
-	if (options.netrc == 1) {
+	if (options.password == NULL &&
+	    options.netrc == 1) {
 		home = getenv("HOME");
 		if (home == NULL) {
 			warnx(_("Unable to obtain home directory"));
@@ -256,6 +285,15 @@ read_rc(const char *file)
 			abs_file = NULL;
 		}
 	}
+
+#if HAVE_LIBSECRET
+	if (options.libsecret == 1) {
+		if (options.password && options.password[0] == '\0') {
+			clear_password();
+			options.password = NULL;
+		}
+	}
+#endif
 
 	return(EXIT_SUCCESS);
 }

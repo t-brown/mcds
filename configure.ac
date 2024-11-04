@@ -49,6 +49,29 @@ AC_CONFIG_FILES([Makefile
 
 PKG_CHECK_MODULES([CURL], [libcurl])
 PKG_CHECK_MODULES([XML], [libxml-2.0])
+PKG_CHECK_MODULES([SECRET], [libsecret-1],, [HAVE_PKG_LIBSECRET=0])
+
+AC_ARG_ENABLE([libsecret],
+        AS_HELP_STRING([--disable-libsecret], [do not use libsecret support]))
+
+AS_IF([test "$HAVE_PKG_LIBSECRET" != "0"],
+         [AS_IF([test x$enable_libsecret != xno],
+                [AC_DEFINE([HAVE_LIBSECRET], [1], [Define to 1 if you have libsecret support])
+		 AC_SUBST(LIBSECRET_CFLAGS)
+		 AC_SUBST(LIBSECRET_LIBS)
+		 AM_CONDITIONAL([WANT_LIBSECRET], [test x = x])
+                 enable_libsecret=yes
+                ],
+                [AC_DEFINE([HAVE_LIBSECRET], [0], [Define to 1 if you have libsecret support])
+		 AM_CONDITIONAL([WANT_LIBSECRET], [test x = y])
+                 enable_libsecret=no
+		]
+          )],
+          [AC_DEFINE([HAVE_LIBSECRET], [0], [Define to 1 if you have libsecret support])
+           AM_CONDITIONAL([WANT_LIBSECRET], [test x = y])
+           enable_libsecret=no
+          ]
+)
 
 dnl locate gpgme and gpg
 AH_TEMPLATE([GPGME_CONFIG], [Defined to the full path of gpgme-config])
@@ -102,4 +125,5 @@ echo "Installation prefix        : $prefix"
 echo "C command                  : $CC $CFLAGS"
 echo "Linker                     : $LD $LDFLAGS $LIBS"
 echo "Enable GPGME               : $enable_gpgme"
+echo "Enable libsecret           : $enable_libsecret"
 echo

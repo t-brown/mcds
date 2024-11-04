@@ -53,6 +53,9 @@
 #include "carddav.h"
 #include "xml.h"
 
+#if HAVE_LIBSECRET
+#include "secret.h"
+#endif
 
 /* Initalise extern definitions */
 #define X(a, b) b,
@@ -117,15 +120,18 @@ main(int argc, char **argv)
 
 	if (options.verbose) {
 		fprintf(stderr, "%s options are:\n", program_name());
-		fprintf(stderr, "  URL        : %s\n", options.url);
-		fprintf(stderr, "  SSL Verify : %d\n", options.verify);
-		fprintf(stderr, "  Use .netrc : %d\n", options.netrc);
-		fprintf(stderr, "  Username   : %s\n", options.username);
-		fprintf(stderr, "  Password   : %s\n", options.password);
-		fprintf(stderr, "  Query term : %s\n", options.term);
-		fprintf(stderr, "  Query      : %s\n",
+		fprintf(stderr, "  URL               : %s\n", options.url);
+		fprintf(stderr, "  SSL Verify        : %d\n", options.verify);
+		fprintf(stderr, "  Use .netrc        : %d\n", options.netrc);
+		fprintf(stderr, "  Use libsecret     : %d\n", options.libsecret);
+		fprintf(stderr, "  Save password     : %d\n", options.save);
+		fprintf(stderr, "  Password prompted : %d\n", options.pwprompt);
+		fprintf(stderr, "  Username          : %s\n", options.username);
+		fprintf(stderr, "  Password          : %s\n", options.password);
+		fprintf(stderr, "  Query term        : %s\n", options.term);
+		fprintf(stderr, "  Query             : %s\n",
 				sterm_name[options.query]);
-		fprintf(stderr, "  Search     : %s\n",
+		fprintf(stderr, "  Search            : %s\n",
 				sterm_name[options.search]);
 	}
 
@@ -143,6 +149,16 @@ main(int argc, char **argv)
 		return(EXIT_FAILURE);
 	}
 
+	if (options.save) {
+#if HAVE_LIBSECRET
+		if (options.libsecret) {
+			if(store_password()) {
+				return(EXIT_FAILURE);
+			}
+		}
+#endif
+	}
+
 	if (options.url) {
 		free(options.url);
 		options.url = NULL;
@@ -150,6 +166,14 @@ main(int argc, char **argv)
 	if (options.term) {
 		free(options.term);
 		options.term = NULL;
+	}
+	if (options.username) {
+		free(options.username);
+		options.username = NULL;
+	}
+	if (options.password) {
+		free(options.password);
+		options.password = NULL;
 	}
 	if (res) {
 		free(res);
@@ -178,11 +202,13 @@ parse_argv(int argc, char **argv, char **file)
 {
 	int opt = 0;
 	int opt_index = 0;
-	char *soptions = "c:hq:s:u:Vv";         /* short options structure */
+	char *soptions = "c:hpq:Ss:u:Vv";        /* short options structure */
 	static struct option loptions[] = {     /* long options structure */
 		{"config",     required_argument,  NULL,  'c'},
 		{"help",       no_argument,        NULL,  'h'},
+		{"password",   no_argument,        NULL,  'p'},
 		{"query",      required_argument,  NULL,  'q'},
+		{"save",       no_argument,        NULL,  'S'},
 		{"search",     required_argument,  NULL,  's'},
 		{"url",        required_argument,  NULL,  'u'},
 		{"version",    no_argument,        NULL,  'V'},
@@ -204,6 +230,9 @@ parse_argv(int argc, char **argv, char **file)
 		case 'h':
 			print_usage();
 			break;
+		case 'p':
+			options.pwprompt = 1;
+			break;
 		case 'q':
 			if (optarg[0] == 'a' ||
 			    optarg[0] == 'A' ) {
@@ -218,6 +247,9 @@ parse_argv(int argc, char **argv, char **file)
 				   optarg[0] == 'T' ) {
 				options.query = telephone;
 			}
+			break;
+		case 'S':
+			options.save = 1;
 			break;
 		case 's':
 			if (optarg[0] == 'a' ||
@@ -277,11 +309,13 @@ print_usage(void)
 usage: %s [-c config] [-h] [-q a|e|n|t] [-s a|e|n|t] [-u URL] [-V] [-v] string\n\
   -c, --config       A configuration file to use.\n\
   -h, --help         Display this help and exit.\n\
+  -p, --password     Prompt for a password.\n\
   -q, --query  a|e|n|t Query term (default name). Known terms are:\n\
                      a = address\n\
                      e = email\n\
                      n = name\n\
                      t = telephone\n\
+  -S, --save         Save the password.\n\
   -s, --search a|n|e|t Search term (default email). Known terms are:\n\
                      a = address\n\
                      e = email\n\
@@ -308,8 +342,12 @@ Copyright (C) %s Timothy Brown.\n\
 License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>\n\
 This is free software: you are free to change and redistribute it.\n\
 There is NO WARRANTY, to the extent permitted by law.\n\n"), "2019");
-	printf(_("Compiled on %s at %s %s GPGME support.\n\n"),
-	       __DATE__, __TIME__, ngettext("with", "with-out", HAVE_GPGME)
+	printf(_("Compiled on %s at %s:\n"
+		 " - %s GPGME support.\n"
+		 " - %s libsecret support.\n\n"),
+	       __DATE__, __TIME__,
+	       ngettext("with", "with-out", HAVE_GPGME),
+	       ngettext("with", "with-out", HAVE_LIBSECRET)
 	       );
 	exit(EXIT_FAILURE);
 }
