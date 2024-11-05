@@ -200,8 +200,6 @@ read_rc(const char *file)
 			if (lookup_password() == 1) {
 				return(EXIT_FAILURE);
 			}
-		} else {
-			store_password();
 		}
 	}
 #endif
