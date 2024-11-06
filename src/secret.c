@@ -122,7 +122,7 @@ clear_password(void)
 		warnx(_("error clearing password with libsecret: %s"), error->message);
 		g_error_free(error);
 	}
-	return(EXIT_SUCCESS);
+	return(!error && removed ? EXIT_SUCCESS : EXIT_FAILURE);
 }
 #endif
 
