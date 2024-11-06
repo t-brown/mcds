@@ -39,7 +39,7 @@
 The
 .Nm
 utility queries a CardDAV server for requested information.
-It's primary function is to provide an address query command for
+Its primary function is to provide an address query command for
 .Xr mutt 1 .
 .Pp
 The options are as follows:
@@ -50,7 +50,7 @@ Specifies an alternative configuration file. The default file is
 .It Fl h
 Print help text to standard output and exit.
 .It Fl p
-Force the presentation of a password prompt.
+Prompt for a password.
 .It Fl q Cm a | e | n | t
 The term to query against.
 Known terms are:
@@ -170,12 +170,12 @@ Now the query command can be shortened to:
 set query_command="mcds '%s'"
 .Ed
 .Pp
-When compiled against libsecret,
+When compiled against and after enabling libsecret in the configuration file,
 .Nm
-saves passwords provided at the password prompt. To replace the saved
-password (or to clear, entering no password at the prompt):
+can save passwords provided at the password prompt. To set, replace or clear
+the password, run
 .Bd -literal -offset indent
-mcds -p
+mcds -pS
 .Ed
 .Sh SEE ALSO
 .Xr curl 1 ,
