@@ -3,7 +3,7 @@
 #
 
 AC_PREREQ(2.61)
-AC_INIT([mcds], [1.7], [tbrown@freeshell.org])
+AC_INIT([mcds], [1.8], [tbrown@freeshell.org])
 AC_CONFIG_AUX_DIR([build-aux])
 
 # Define our M4 macro directory

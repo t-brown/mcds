@@ -1,14 +1,14 @@
 # SOME DESCRIPTIVE TITLE.
-# Copyright (C) YEAR Free Software Foundation, Inc.
+# Copyright (C) YEAR Timothy Brown <tbrown@freeshell.org>
 # This file is distributed under the same license as the mcds package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: mcds 1.7\n"
+"Project-Id-Version: mcds 1.8\n"
 "Report-Msgid-Bugs-To: <tbrown@freeshell.org>\n"
-"POT-Creation-Date: 2024-10-20 11:19-0600\n"
+"POT-Creation-Date: 2024-11-09 15:27-0700\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -84,8 +84,8 @@ msgstr ""
 msgid "Unable to finalise null curl handle."
 msgstr ""
 
-#: src/decrypt.c:70 src/decrypt.c:74 src/decrypt.c:78 src/rc.c:100 src/rc.c:204
-#: src/rc.c:231 src/rc.c:250
+#: src/decrypt.c:70 src/decrypt.c:74 src/decrypt.c:78 src/rc.c:102 src/rc.c:230
+#: src/rc.c:257 src/rc.c:277
 #, c-format
 msgid "Unable to unveil %s"
 msgstr ""
@@ -133,26 +133,28 @@ msgstr ""
 msgid "Unable to close password file."
 msgstr ""
 
-#: src/main.c:113
+#: src/main.c:116
 msgid "Unable to disable further unveil"
 msgstr ""
 
-#: src/main.c:259
+#: src/main.c:291
 msgid "Must specify a term to query for."
 msgstr ""
 
-#: src/main.c:276
+#: src/main.c:308
 #, c-format
 msgid ""
 "usage: %s [-c config] [-h] [-q a|e|n|t] [-s a|e|n|t] [-u URL] [-V] [-v] "
 "string\n"
 "  -c, --config       A configuration file to use.\n"
 "  -h, --help         Display this help and exit.\n"
+"  -p, --password     Prompt for a password.\n"
 "  -q, --query  a|e|n|t Query term (default name). Known terms are:\n"
 "                     a = address\n"
 "                     e = email\n"
 "                     n = name\n"
 "                     t = telephone\n"
+"  -S, --save         Save the password.\n"
 "  -s, --search a|n|e|t Search term (default email). Known terms are:\n"
 "                     a = address\n"
 "                     e = email\n"
@@ -164,12 +166,12 @@ msgid ""
 "  string             The query string to look for within the query term.\n"
 msgstr ""
 
-#: src/main.c:305
+#: src/main.c:339
 #, c-format
 msgid "%s (GNU %s) %s\n"
 msgstr ""
 
-#: src/main.c:306
+#: src/main.c:340
 #, c-format
 msgid ""
 "Copyright (C) %s Timothy Brown.\n"
@@ -180,14 +182,16 @@ msgid ""
 "\n"
 msgstr ""
 
-#: src/main.c:311
+#: src/main.c:345
 #, c-format
 msgid ""
-"Compiled on %s at %s %s GPGME support.\n"
+"Compiled on %s at %s:\n"
+" - %s GPGME support.\n"
+" - %s libsecret support.\n"
 "\n"
 msgstr ""
 
-#: src/main.c:312
+#: src/main.c:349 src/main.c:350
 msgid "with"
 msgid_plural "with-out"
 msgstr[0] ""
@@ -198,32 +202,32 @@ msgstr[1] ""
 msgid "out of memory (unable to allocate %zu bytes)"
 msgstr ""
 
-#: src/rc.c:81 src/rc.c:186 src/rc.c:239
+#: src/rc.c:83 src/rc.c:212 src/rc.c:266
 msgid "Unable to obtain home directory"
 msgstr ""
 
-#: src/rc.c:87
+#: src/rc.c:89
 msgid "Unable to build rc file string"
 msgstr ""
 
-#: src/rc.c:93
+#: src/rc.c:95
 msgid "Unable to duplicate string"
 msgstr ""
 
-#: src/rc.c:173
+#: src/rc.c:181
 #, c-format
 msgid "Unable to close %s"
 msgstr ""
 
-#: src/rc.c:192 src/rc.c:245
+#: src/rc.c:218 src/rc.c:272
 msgid "Unable to build password file string"
 msgstr ""
 
-#: src/rc.c:198
+#: src/rc.c:224
 msgid "Unable to duplicate password file string"
 msgstr ""
 
-#: src/rc.c:223
+#: src/rc.c:249
 msgid "Encrypted password files are not supportred, ignoring."
 msgstr ""
 

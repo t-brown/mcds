@@ -1,3 +1,52 @@
+2024-11-09  Timothy Brown  <tbrown@freeshell.org>
+
+	Creating release v1.8
+	Adding the ability to use libsecret including
+	prompting and saving the password.
+
+2024-10-20  Timothy Brown  <tbrown@freeshell.org>
+
+	Creating release v1.7.
+	Fixed a few printf() object types.
+	Removed most of the autoconfig automatically generated files.
+	Changing CI from Travis to Github actions.
+	Fail and return an error when HTTP request fails.
+	Cleaned up/rearranged the arg parsing so as to be able to
+	run -V and -h without having an rc file.
+	Fixed unveil ifdefs.
+
+2020-01-15  Timothy Brown  <tbrown@freeshell.org>
+
+	Created version 1.6
+	Cleaned up the autoconf macros for GPGME.
+	Created version 1.5
+	Updated the result regex.
+
+2019-12-28  Timothy Brown  <tbrown@freeshell.org>
+
+	Created version 1.4
+
+2019-12-26  Timothy Brown  <tbrown@freeshell.org>
+
+	Created version 1.3
+	Adding support for passwords encrypted with GPG.
+
+2019-05-07  Timothy Brown  <tbrown@freeshell.org>
+
+	Created version 1.2
+	Created version 1.1
+
+2019-05-06  Timothy Brown  <tbrown@freeshell.org>
+
+	Created version 1.0
+	Adding pledge().
+
+2019-04-25  Timothy Brown  <tbrown@freeshell.org>
+
+	Created version 0.9
+	Added the ability to do case insensitive searches and
+	to parse the response from Gmail.
+
 2014-03-14  Timothy Brown  <tbrown@freeshell.org>
 
 	Adding more debug info and correcting for \r's.
