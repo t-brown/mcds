@@ -186,7 +186,7 @@ read_rc(const char *file)
 		abs_file = NULL;
 	}
 
-	if (options.username == NULL) {
+	if (options.username == NULL && options.netrc == 0) {
 		options.username = strdup(getenv("USER"));
 	}
 
