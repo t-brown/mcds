@@ -5,13 +5,16 @@ build-aux/*
 config.log
 config.status
 configure
+configure~
 po/POTFILES
 po/remove-potcdate.sed
+po/Makevars.template
 Makefile
 Makefile.in
 src/.deps/
 src/config.h
 src/config.h.in
+src/config.h.in~
 src/stamp-h1
 src/*.o
 VERSION
