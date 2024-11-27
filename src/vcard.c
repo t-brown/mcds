@@ -41,6 +41,37 @@
 #include "vcard.h"
 
 /**
+ * Compile regex, checking and handling errors.
+ *
+ * \parm[in] preg The compiled regex.
+ * \parm[in] regex The pattern to match.
+ * \parm[in] cflags The compilation flags according to regex(3).
+ *
+ * \retval 0 If there were no errors.
+ * \retval 1 If an error was encounted.
+ **/
+static int
+xregcomp(regex_t *preg, const char *regex, int cflags) {
+	int rerr = 0;			/* Regex error code */
+	size_t rlen = 0;		/* Regex error string length */
+	char *rstr = NULL;		/* Regex error string */
+
+	rerr = regcomp(preg, regex, REG_EXTENDED | cflags);
+	if (rerr != 0) {
+		rlen = regerror(rerr, preg, NULL, 0);
+		rstr = xmalloc((rlen+1)*sizeof(char));
+		regerror(rerr, preg, rstr, rlen);
+		warnx(_("Unable to compile regex '%s': %s\n"), regex, rstr);
+		if (rstr) {
+			free(rstr);
+			rstr = NULL;
+		}
+		return 1;
+	}
+	return 0;
+}
+
+/**
  * Search a query's result. This will run regexs over the result
  * to filter the data.
  * The first regex will be to obtain the name (FN property).
@@ -63,8 +94,6 @@ search(const char *card)
 	int plen = 0;			/* Length of snprintf()'s */
 
 	int rerr = 0;			/* Regex error code */
-	size_t rlen = 0;		/* Regex error string length */
-	char *rstr = NULL;		/* Regex error string */
 
 	size_t qlen = 0;		/* Length of the query string */
 	char *q = NULL;			/* Regex pattern for query */
@@ -96,15 +125,7 @@ search(const char *card)
 		return(EXIT_FAILURE);
 	}
 
-	if ((rerr = regcomp(&rq, q, REG_EXTENDED|REG_NEWLINE|REG_ICASE)) != 0) {
-		rlen = regerror(rerr, &rq, NULL, 0);
-		rstr = xmalloc((rlen+1)*sizeof(char));
-		regerror(rerr, &rq, rstr, rlen);
-		warnx(_("Unable to compile regex '%s': %s\n"), q, rstr);
-		if (rstr) {
-			free(rstr);
-			rstr = NULL;
-		}
+	if (xregcomp(&rq, q, REG_NEWLINE|REG_ICASE) != 0) {
 		return(EXIT_FAILURE);
 	}
 
@@ -119,15 +140,7 @@ search(const char *card)
 		return(EXIT_FAILURE);
 	}
 
-	if ((rerr = regcomp(&rs, s, REG_EXTENDED|REG_NEWLINE)) != 0) {
-		rlen = regerror(rerr, &rs, NULL, 0);
-		rstr = xmalloc((rlen+1)*sizeof(char));
-		regerror(rerr, &rs, rstr, rlen);
-		warnx(_("Unable to compile regex '%s': %s\n"), s, rstr);
-		if (rstr) {
-			free(rstr);
-			rstr = NULL;
-		}
+	if (xregcomp(&rs, s, REG_NEWLINE) != 0) {
 		return(EXIT_FAILURE);
 	}
 
