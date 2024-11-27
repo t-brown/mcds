@@ -72,6 +72,51 @@ xregcomp(regex_t *preg, const char *regex, int cflags) {
 }
 
 /**
+ * Unfold a vCard per RFC6350 section 3.2.
+ *
+ * It will remove the gaps between folded lines in-place.
+ *
+ * \parm[in,out] card The vcard.
+ *
+ * \retval 0 If there were no errors.
+ * \retval 1 If an error was encounted.
+ **/
+static int
+unfold(char *vcard)
+{
+	static const char r[] = "\r\n[ \t]";     /* Continuation fold */
+	regmatch_t matches[1];
+	regex_t re;
+	size_t length = strlen(vcard);
+	size_t in_ptr = 0; /* AKA cut_to */
+	size_t out_ptr = 0; /* AKA cut_from */
+
+	if (xregcomp(&re, r, 0) != 0) {
+		return 1;
+	}
+
+	/* Hunt for folds and move the chunks inbetween them back by
+	 * the accumulated number of folding characters. */
+	while (regexec(&re, vcard + in_ptr, 1, matches, 0) == 0) {
+		if (matches[0].rm_so == -1 || matches[0].rm_eo == -1) {
+			errx(EXIT_FAILURE, _("inconsistent regex result"));
+		}
+		memmove(vcard + out_ptr,
+			vcard + in_ptr,
+			matches[0].rm_so);
+		in_ptr   = in_ptr + matches[0].rm_eo;
+		out_ptr  = out_ptr + matches[0].rm_so;
+	}
+	if (options.verbose) {
+		fprintf(stderr, "Unfolding cut %zd bytes\n", in_ptr - out_ptr);
+	}
+	memmove(vcard + out_ptr, vcard + in_ptr, length - in_ptr + 1);
+
+	regfree(&re);
+	return 0;
+}
+
+/**
  * Search a query's result. This will run regexs over the result
  * to filter the data.
  * The first regex will be to obtain the name (FN property).
@@ -85,7 +130,7 @@ xregcomp(regex_t *preg, const char *regex, int cflags) {
  * \retval 1 If an error was encounted.
  **/
 int
-search(const char *card)
+search(char *card)
 {
 	/* Regex patterns */
 	static const char r[] = "%s(.*):(.*)";     /* Whole result */
@@ -106,6 +151,11 @@ search(const char *card)
 	regex_t rs = {0};		/* Regex precompiled search */
 
 	regmatch_t match[3] = {0};	/* Regex matches */
+
+	if (unfold(card)) {
+		warnx(_("Error unfolding vCard."));
+		return(EXIT_FAILURE);
+	}
 
 	/* Generate a quoted query term */
 	if (quote(options.term, &qt)) {

@@ -32,8 +32,9 @@ extern "C"
 {
 #endif
 
-/** Search the vcard */
-int search(const char *);
+/** Search the vcard.
+ * The supplied card string will be unfolded in place so must be modifiable. */
+int search(char *);
 
 /** Quote a string for regex's */
 int quote(const char *, char **);
