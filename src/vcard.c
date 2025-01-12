@@ -43,7 +43,7 @@
 /**
  * Compile regex, checking and handling errors.
  *
- * \parm[in] preg The compiled regex.
+ * \parm[out] preg The compiled regex.
  * \parm[in] regex The pattern to match.
  * \parm[in] cflags The compilation flags according to regex(3).
  *
