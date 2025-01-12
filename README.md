@@ -11,8 +11,8 @@ Prerequisites
 -------------
 
 +  [C compiler](https://gcc.gnu.org/)
-+  [Curl](https://curl.haxx.se/libcurl/)
-+  [LibXML2](http://www.xmlsoft.org/)
++  [Curl](https://curl.se/libcurl/)
++  [LibXML2](https://gitlab.gnome.org/GNOME/libxml2/-/wikis/home)
 +  Optionally [GPGME](https://www.gnupg.org/software/gpgme/index.html)
 
 
@@ -80,10 +80,10 @@ The typical URL to query for various CardDav servers.
     `https://example.org/caldav.php/username/addresses`
 
 + [Owncloud](https://owncloud.org/)
-    `http://example.org/remote.php/carddav/addressbooks/username/contacts`
+    `https://example.org/remote.php/carddav/addressbooks/username/contacts`
 
 + [Nextcloud](https://nextcloud.com/)
-    `http://example.org/remote.php/dav/addressbooks/users/username/contacts`
+    `https://example.org/remote.php/dav/addressbooks/users/username/contacts`
 
 + [Gmail](https://gmail.com/)
     `https://www.googleapis.com/carddav/v1/principals/username@example.com/lists/default`
