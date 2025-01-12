@@ -14,6 +14,7 @@ Prerequisites
 +  [Curl](https://curl.se/libcurl/)
 +  [LibXML2](https://gitlab.gnome.org/GNOME/libxml2/-/wikis/home)
 +  Optionally [GPGME](https://www.gnupg.org/software/gpgme/index.html)
++  Optionally [Libsecret](https://wiki.gnome.org/Projects/Libsecret)
 
 
 Building / Installation
