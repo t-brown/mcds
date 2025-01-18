@@ -84,7 +84,7 @@ xregcomp(regex_t *preg, const char *regex, int cflags) {
 static int
 unfold(char *vcard)
 {
-	static const char r[] = "\r\n[ \t]";     /* Continuation fold */
+	static const char r[] = "\r?\n[ \t]";     /* Continuation fold */
 	regmatch_t matches[1];
 	regex_t re;
 	size_t length = strlen(vcard);
