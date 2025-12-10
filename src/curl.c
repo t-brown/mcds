@@ -66,7 +66,7 @@ cinit(CURL **hdl)
 		warnx(_("Unable to initialize curl handle."));
 		return(EXIT_FAILURE);
 	}
-	if (curl_easy_setopt(*hdl, CURLOPT_VERBOSE, options.verbose)) {
+	if (curl_easy_setopt(*hdl, CURLOPT_VERBOSE, (long) options.verbose)) {
 		warnx(_("Unable to set curls verbose option."));
 		return(EXIT_FAILURE);
 	}
@@ -74,7 +74,7 @@ cinit(CURL **hdl)
 		warnx(_("Unable to set curls URL."));
 		return(EXIT_FAILURE);
 	}
-	if (curl_easy_setopt(*hdl, CURLOPT_SSL_VERIFYPEER, options.verify)) {
+	if (curl_easy_setopt(*hdl, CURLOPT_SSL_VERIFYPEER, (long) options.verify)) {
 		warnx(_("Unable to set curls SSL verification."));
 		return(EXIT_FAILURE);
 	}
@@ -88,7 +88,7 @@ cinit(CURL **hdl)
 			return(EXIT_FAILURE);
 		}
 	} else {
-		if (curl_easy_setopt(*hdl, CURLOPT_NETRC, options.netrc)) {
+		if (curl_easy_setopt(*hdl, CURLOPT_NETRC, (long) options.netrc)) {
 			warnx(_("Unable to set curls .netrc option."));
 			return(EXIT_FAILURE);
 		}
