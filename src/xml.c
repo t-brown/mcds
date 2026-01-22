@@ -107,7 +107,7 @@ walk_tree(xmlDocPtr doc, xmlNode *node)
 							_("Data:\n%s\n"),
 							data);
 					}
-					search((const char *)data);
+					search((char *)data);
 					xmlFree(data);
 				}
 		}

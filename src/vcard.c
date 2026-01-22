@@ -41,6 +41,82 @@
 #include "vcard.h"
 
 /**
+ * Compile regex, checking and handling errors.
+ *
+ * \parm[out] preg The compiled regex.
+ * \parm[in] regex The pattern to match.
+ * \parm[in] cflags The compilation flags according to regex(3).
+ *
+ * \retval 0 If there were no errors.
+ * \retval 1 If an error was encounted.
+ **/
+static int
+xregcomp(regex_t *preg, const char *regex, int cflags) {
+	int rerr = 0;			/* Regex error code */
+	size_t rlen = 0;		/* Regex error string length */
+	char *rstr = NULL;		/* Regex error string */
+
+	rerr = regcomp(preg, regex, REG_EXTENDED | cflags);
+	if (rerr != 0) {
+		rlen = regerror(rerr, preg, NULL, 0);
+		rstr = xmalloc((rlen+1)*sizeof(char));
+		regerror(rerr, preg, rstr, rlen);
+		warnx(_("Unable to compile regex '%s': %s\n"), regex, rstr);
+		if (rstr) {
+			free(rstr);
+			rstr = NULL;
+		}
+		return 1;
+	}
+	return 0;
+}
+
+/**
+ * Unfold a vCard per RFC6350 section 3.2.
+ *
+ * It will remove the gaps between folded lines in-place.
+ *
+ * \parm[in,out] card The vcard.
+ *
+ * \retval 0 If there were no errors.
+ * \retval 1 If an error was encounted.
+ **/
+static int
+unfold(char *vcard)
+{
+	static const char r[] = "\r?\n[ \t]";     /* Continuation fold */
+	regmatch_t matches[1];
+	regex_t re;
+	size_t length = strlen(vcard);
+	size_t in_ptr = 0; /* AKA cut_to */
+	size_t out_ptr = 0; /* AKA cut_from */
+
+	if (xregcomp(&re, r, 0) != 0) {
+		return 1;
+	}
+
+	/* Hunt for folds and move the chunks inbetween them back by
+	 * the accumulated number of folding characters. */
+	while (regexec(&re, vcard + in_ptr, 1, matches, 0) == 0) {
+		if (matches[0].rm_so == -1 || matches[0].rm_eo == -1) {
+			errx(EXIT_FAILURE, _("inconsistent regex result"));
+		}
+		memmove(vcard + out_ptr,
+			vcard + in_ptr,
+			matches[0].rm_so);
+		in_ptr   = in_ptr + matches[0].rm_eo;
+		out_ptr  = out_ptr + matches[0].rm_so;
+	}
+	if (options.verbose) {
+		fprintf(stderr, "Unfolding cut %zd bytes\n", in_ptr - out_ptr);
+	}
+	memmove(vcard + out_ptr, vcard + in_ptr, length - in_ptr + 1);
+
+	regfree(&re);
+	return 0;
+}
+
+/**
  * Search a query's result. This will run regexs over the result
  * to filter the data.
  * The first regex will be to obtain the name (FN property).
@@ -54,7 +130,7 @@
  * \retval 1 If an error was encounted.
  **/
 int
-search(const char *card)
+search(char *card)
 {
 	/* Regex patterns */
 	static const char r[] = "%s(.*):(.*)";     /* Whole result */
@@ -63,8 +139,6 @@ search(const char *card)
 	int plen = 0;			/* Length of snprintf()'s */
 
 	int rerr = 0;			/* Regex error code */
-	size_t rlen = 0;		/* Regex error string length */
-	char *rstr = NULL;		/* Regex error string */
 
 	size_t qlen = 0;		/* Length of the query string */
 	char *q = NULL;			/* Regex pattern for query */
@@ -77,6 +151,11 @@ search(const char *card)
 	regex_t rs = {0};		/* Regex precompiled search */
 
 	regmatch_t match[3] = {0};	/* Regex matches */
+
+	if (unfold(card)) {
+		warnx(_("Error unfolding vCard."));
+		return(EXIT_FAILURE);
+	}
 
 	/* Generate a quoted query term */
 	if (quote(options.term, &qt)) {
@@ -96,15 +175,7 @@ search(const char *card)
 		return(EXIT_FAILURE);
 	}
 
-	if ((rerr = regcomp(&rq, q, REG_EXTENDED|REG_NEWLINE|REG_ICASE)) != 0) {
-		rlen = regerror(rerr, &rq, NULL, 0);
-		rstr = xmalloc((rlen+1)*sizeof(char));
-		regerror(rerr, &rq, rstr, rlen);
-		warnx(_("Unable to compile regex '%s': %s\n"), q, rstr);
-		if (rstr) {
-			free(rstr);
-			rstr = NULL;
-		}
+	if (xregcomp(&rq, q, REG_NEWLINE|REG_ICASE) != 0) {
 		return(EXIT_FAILURE);
 	}
 
@@ -119,15 +190,7 @@ search(const char *card)
 		return(EXIT_FAILURE);
 	}
 
-	if ((rerr = regcomp(&rs, s, REG_EXTENDED|REG_NEWLINE)) != 0) {
-		rlen = regerror(rerr, &rs, NULL, 0);
-		rstr = xmalloc((rlen+1)*sizeof(char));
-		regerror(rerr, &rs, rstr, rlen);
-		warnx(_("Unable to compile regex '%s': %s\n"), s, rstr);
-		if (rstr) {
-			free(rstr);
-			rstr = NULL;
-		}
+	if (xregcomp(&rs, s, REG_NEWLINE) != 0) {
 		return(EXIT_FAILURE);
 	}
 
