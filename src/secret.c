@@ -55,8 +55,9 @@
 #define MCDS_SECRET_KEY_USER "user"
 
 static const SecretSchema mcds_secret_schema = {
-	MCDS_SECRET_SCHEMA_NAME, SECRET_SCHEMA_NONE,
-	{
+	.name = MCDS_SECRET_SCHEMA_NAME,
+	.flags = SECRET_SCHEMA_NONE,
+	.attributes = {
 		{ MCDS_SECRET_KEY_URL,  SECRET_SCHEMA_ATTRIBUTE_STRING },
 		{ MCDS_SECRET_KEY_USER, SECRET_SCHEMA_ATTRIBUTE_STRING },
 		{ "NULL", 0 }
