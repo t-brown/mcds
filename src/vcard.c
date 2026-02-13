@@ -88,28 +88,51 @@ unfold(char *vcard)
 	regmatch_t matches[1];
 	regex_t re;
 	size_t length = strlen(vcard);
-	size_t in_ptr = 0; /* AKA cut_to */
-	size_t out_ptr = 0; /* AKA cut_from */
+
+	/* We have two cursors. The read pointer is never behind the
+	 * the write pointer because we only remove characters. */
+	size_t in_ptr = 0;
+	size_t out_ptr = 0;
 
 	if (xregcomp(&re, r, 0) != 0) {
 		return 1;
 	}
 
 	/* Hunt for folds and move the chunks inbetween them back by
-	 * the accumulated number of folding characters. */
+	 * the accumulated number of folding characters.
+	 *   Counter intuitively, we always move the section that is
+	 * BEFORE the whitespace we just found, because then we know
+	 * how much to move and don't blindly move all the rest of the
+	 * buffer for each iteration. */
 	while (regexec(&re, vcard + in_ptr, 1, matches, 0) == 0) {
+		/* We have matched some whitespace representing a 'fold'.
+		 * Sanity-check the matches record */
 		if (matches[0].rm_so == -1 || matches[0].rm_eo == -1) {
 			errx(EXIT_FAILURE, _("inconsistent regex result"));
 		}
+
+		/* We have matched a fold (whitespace to be removed).
+		 * move the text _between the last and current_ gaps to
+		 * to the current write pointer.
+		 *   If this is the _first_ fold, then this memmove
+		 * should be a NOP. If it is the _last_ fold, then the
+		 * final segment will be moved after the loop.
+		 *   rm_so has the length of text to move because it is the
+		 * offset of the whitespace which ends it. */
 		memmove(vcard + out_ptr,
 			vcard + in_ptr,
 			matches[0].rm_so);
+
+		/* Move the read pointer beyond the white space we found. */
 		in_ptr   = in_ptr + matches[0].rm_eo;
+
+		/* Move the write pointer to beyond the text we just moved. */
 		out_ptr  = out_ptr + matches[0].rm_so;
 	}
 	if (options.verbose) {
 		fprintf(stderr, "Unfolding cut %zd bytes\n", in_ptr - out_ptr);
 	}
+	/* Move the final segment. Will be a NOP if we have had no folds. */
 	memmove(vcard + out_ptr, vcard + in_ptr, length - in_ptr + 1);
 
 	regfree(&re);
