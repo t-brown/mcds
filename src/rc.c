@@ -62,7 +62,6 @@ read_rc(const char *file)
 {
 
 	int i  = 0;                    /* Temporary loop indexer */
-	int ln = 0;                    /* Line number */
 	int len = 0;                   /* String length */
 	char *home = NULL;             /* Home directory */
 	char *pfile = NULL;            /* Password file */
@@ -116,7 +115,6 @@ read_rc(const char *file)
 	}
 
 	while (fgets(line, LINE_MAX, ifd) != NULL) {
-		++ln;
 		lptr = line;
 		i = 0;
 		if (line[0] != '\n' && line[0] != '#') {
