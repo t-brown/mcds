@@ -104,7 +104,8 @@ m4_ifdef([AM_PATH_GPGME],
                 [AC_DEFINE(HAVE_GPGME, 0, [Define to 1 if you have GPGME support])
                  AM_CONDITIONAL([WANT_GPGME], [test x = y])]
           )],
-          [AC_DEFINE(HAVE_GPGME, 0, [Define to 1 if you have GPGME support])
+          [AC_MSG_NOTICE([GPGME not detectable])
+           AC_DEFINE(HAVE_GPGME, 0, [Define to 1 if you have GPGME support])
            AM_CONDITIONAL([WANT_GPGME], [test x = y])
            enable_gpgme=no
           ]
